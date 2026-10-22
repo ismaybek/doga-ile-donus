@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Doğa ile Dönüş: su ve karbon ayak izini hesapla, rozetini kazan.">
+<meta name="theme-color" content="#4b7a22">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234b7a22'/%3E%3Cpath d='M12 4C9.5 7.3 7.5 9.7 7.5 12.3a4.5 4.5 0 0 0 9 0C16.5 9.7 14.5 7.3 12 4Z' fill='%23fff'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Doğa ile Dönüş Ayak İzi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single app shell (top bar / scrolling screen / fixed action bar).
+   Phone: fills the screen. Desktop: the same shell centered like a device over a quiet landscape. */
+:root {
+  --ground: #dfe9e5;
+  --surface: #f7faf8;
+  --panel: #ffffff;
+  --ink: #12302b;
+  --muted: #5d756f;
+  --line: #dbe6e2;
+  --water: #1f6fae;   --water-soft: #e1eef8;
+  --energy: #b9741a;  --energy-soft: #f8ecd9;
+  --move: #5b5fc7;    --move-soft: #e8e8f9;
+  --food: #4b7a22;    --food-soft: #e5f0d9;
+  --home: #c4562c;    --home-soft: #f8e4da;
+  --hill1: #c9ddd5; --hill2: #b7d1c6;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #08110f; --surface: #101c19; --panel: #172622; --ink: #e4efeb; --muted: #93aba4; --line: #243731;
+    --water: #72b6ea; --water-soft: #15304a; --energy: #e7aa55; --energy-soft: #3a2b14; --move: #a3a6f5; --move-soft: #26284a;
+    --food: #9ccb6b; --food-soft: #20331a; --home: #f0956c; --home-soft: #3c2219; --hill1: #13221e; --hill2: #182b26;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #08110f; --surface: #101c19; --panel: #172622; --ink: #e4efeb; --muted: #93aba4; --line: #243731;
+  --water: #72b6ea; --water-soft: #15304a; --energy: #e7aa55; --energy-soft: #3a2b14; --move: #a3a6f5; --move-soft: #26284a;
+  --food: #9ccb6b; --food-soft: #20331a; --home: #f0956c; --home-soft: #3c2219; --hill1: #13221e; --hill2: #182b26;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; overflow: hidden; display: grid; place-items: center; }
+.backdrop { position: fixed; inset: auto 0 0 0; height: 45vh; pointer-events: none; }
+.backdrop svg { width: 100%; height: 100%; display: block; }
+
+.app { --cat: var(--food); --cat-soft: var(--food-soft); position: relative; width: 100%; height: 100%; background: var(--surface); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; transition: --cat .3s; }
+@media (min-width: 560px) {
+  .app { width: 430px; height: min(880px, calc(100% - 48px)); border-radius: 34px; border: 1px solid var(--line); box-shadow: 0 40px 80px -40px rgba(10, 40, 34, .45), 0 0 0 8px color-mix(in srgb, var(--surface) 55%, transparent); }
+}
+.app[data-cat="water"] { --cat: var(--water); --cat-soft: var(--water-soft); }
+.app[data-cat="energy"] { --cat: var(--energy); --cat-soft: var(--energy-soft); }
+.app[data-cat="move"] { --cat: var(--move); --cat-soft: var(--move-soft); }
+.app[data-cat="food"] { --cat: var(--food); --cat-soft: var(--food-soft); }
+.app[data-cat="home"] { --cat: var(--home); --cat-soft: var(--home-soft); }
+
+.i { width: 22px; height: 22px; flex: none; }
+/* top bar */
+.bar { display: grid; gap: 12px; padding: 14px 18px 12px; background: var(--surface); position: relative; z-index: 2; }
+.bar-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
+.brand { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.logo { width: 38px; height: 38px; flex: none; border-radius: 12px; background: linear-gradient(140deg, var(--water), var(--food)); display: grid; place-items: center; }
+.logo svg { width: 22px; height: 22px; }
+.wordmark { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: -.02em; white-space: nowrap; }
+.wordmark b { color: var(--water); font-weight: 800; } .wordmark em { color: var(--food); font-style: normal; }
+.icon-btn { flex: none; width: 42px; height: 42px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: transform .12s, background .2s; }
+.icon-btn:active { transform: scale(.92); }
+.icon-btn[hidden] { display: none !important; }
+.meta { display: flex; align-items: center; gap: 10px; }
+.meta[hidden] { display: none !important; }
+.cat-chip { display: inline-flex; align-items: center; gap: 6px; font: 700 12px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--cat); background: var(--cat-soft); border-radius: 999px; padding: 5px 10px 5px 8px; transition: color .3s, background .3s; }
+.cat-chip .i { width: 16px; height: 16px; }
+.track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.track div { height: 100%; width: 0; background: var(--cat); border-radius: 99px; transition: width .5s cubic-bezier(.3,1.3,.5,1), background .3s; }
+.count { font: 500 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* screen */
+.screen { position: relative; overflow: hidden auto; overscroll-behavior: contain; }
+.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; pointer-events: none; opacity: .5; }
+.hills path { transition: fill .4s; }
+.page { position: relative; z-index: 1; padding: 6px 20px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-content: start; min-height: 100%; }
+.page.in { animation: pageIn .42s cubic-bezier(.2,1.1,.3,1) both; }
+.page.in.back { animation-name: pageInBack; }
+.page.out { position: absolute; inset: 0 0 auto 0; animation: pageOut .22s ease-in both; pointer-events: none; }
+.page.out.back { animation-name: pageOutBack; }
+@keyframes pageIn { from { opacity: 0; transform: translateX(36px); } }
+@keyframes pageInBack { from { opacity: 0; transform: translateX(-36px); } }
+@keyframes pageOut { to { opacity: 0; transform: translateX(-36px); } }
+@keyframes pageOutBack { to { opacity: 0; transform: translateX(36px); } }
+.q-ic { width: 56px; height: 56px; border-radius: 18px; background: var(--cat-soft); color: var(--cat); display: grid; place-items: center; animation: pop .5s cubic-bezier(.2,1.5,.4,1) both; }
+.q-ic .i { width: 28px; height: 28px; }
+h1, h2 { font-family: var(--display); font-weight: 800; margin: 0; line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
+h1 { font-size: 34px; }
+h2 { font-size: 27px; }
+h3 { font: 700 13px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 6px 0 -6px; }
+.sub { color: var(--muted); margin: -8px 0 0; font-size: 15px; }
+@keyframes pop { from { opacity: 0; transform: scale(.85) translateY(8px); } }
+
+/* options */
+.opts { display: grid; gap: 10px; }
+.opt { display: grid; grid-template-columns: 46px minmax(0, 1fr) 24px; align-items: center; gap: 14px; width: 100%; text-align: left; font: 600 16px var(--body); color: var(--ink); background: var(--panel); border: 1.5px solid var(--line); border-radius: 18px; padding: 12px 14px 12px 12px; cursor: pointer; animation: rise .45s cubic-bezier(.2,1.1,.3,1) both; transition: border-color .15s, transform .12s, background .2s; }
+.opt:hover { border-color: color-mix(in srgb, var(--cat) 40%, var(--line)); }
+.opt:active { transform: scale(.98); }
+.opt .oi { width: 46px; height: 46px; border-radius: 14px; background: var(--cat-soft); color: var(--cat); display: grid; place-items: center; font: 800 18px var(--display); }
+.opt small { display: block; font-weight: 500; font-size: 13px; color: var(--muted); margin-top: 1px; }
+.opt .radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: var(--panel); transition: all .2s; }
+.opt .radio .i { width: 14px; height: 14px; stroke-width: 3; }
+.opt.sel { border-color: var(--cat); background: color-mix(in srgb, var(--cat-soft) 60%, var(--panel)); }
+.opt.sel .radio { background: var(--cat); border-color: var(--cat); animation: tick .35s cubic-bezier(.2,1.6,.4,1); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes tick { from { transform: scale(.4); } }
+
+/* number */
+.numbox { background: var(--panel); border: 1.5px solid var(--line); border-radius: 22px; padding: 22px 18px 18px; display: grid; gap: 14px; }
+.num { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.num button { width: 54px; height: 54px; border-radius: 16px; border: 0; background: var(--cat-soft); color: var(--cat); cursor: pointer; display: grid; place-items: center; transition: transform .1s; }
+.num button:active { transform: scale(.9); }
+.num output { font: 800 60px var(--display); min-width: 2.2ch; text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
+.num output.bump { animation: bump .25s ease; }
+@keyframes bump { 50% { transform: scale(1.15); } }
+.num-unit { text-align: center; color: var(--muted); font-weight: 600; margin-top: -6px; }
+input[type=range] { width: 100%; accent-color: var(--cat); }
+
+/* bill */
+.billbox { background: var(--panel); border: 1.5px solid var(--line); border-radius: 22px; padding: 16px; display: grid; gap: 12px;  grid-template-columns: minmax(0, 1fr); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
+.seg button { font: 700 14px var(--body); border: 0; background: transparent; color: var(--muted); padding: 9px; border-radius: 9px; cursor: pointer; transition: all .2s; }
+.seg button[aria-pressed=true] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.field { display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--cat); padding: 4px 2px 6px; }
+.field input { flex: 1; min-width: 0; width: 100%; font: 800 40px var(--display); border: 0; background: transparent; color: var(--ink); padding: 0; font-variant-numeric: tabular-nums; }
+.field input:focus { outline: none; }
+.field span { font: 700 16px var(--body); color: var(--muted); }
+.conv { display: flex; align-items: center; gap: 6px; font: 500 14px var(--mono); color: var(--cat); min-height: 1.5em; }
+.conv .i { width: 16px; height: 16px; }
+
+/* action bar */
+.actionbar { position: relative; z-index: 2; padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.alt { display: flex; gap: 8px; }
+.alt:empty { display: none; }
+.btn { font: 700 16px var(--body); border: 0; border-radius: 16px; padding: 15px 18px; background: var(--ink); color: var(--surface); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform .12s, opacity .2s, background .3s; width: 100%; }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--cat); color: var(--panel); }
+:root:not([data-theme="light"]) .btn.primary { color: var(--surface); }
+.btn.ghost { background: var(--panel); color: var(--ink); border: 1.5px solid var(--line); padding: 11px 14px; font-size: 14px; }
+.btn[disabled] { opacity: .35; cursor: default; }
+.btn .i { width: 20px; height: 20px; }
+.hint { text-align: center; font-size: 13px; color: var(--muted); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+
+/* intro */
+.hero { position: relative; border-radius: 26px; background: linear-gradient(160deg, var(--water-soft), var(--food-soft)); display: grid; place-items: center; padding: 18px 0 10px; overflow: hidden; }
+.globe { width: 190px; height: auto; overflow: visible; animation: float 5s ease-in-out infinite; }
+.globe .waves { animation: wave 6s linear infinite; }
+.globe .orbit { transform-origin: 100px 100px; animation: spin 14s linear infinite; }
+.globe .orbit.r { animation-direction: reverse; animation-duration: 18s; }
+@keyframes float { 50% { transform: translateY(-7px); } }
+@keyframes wave { to { transform: translateX(-80px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px; display: grid; gap: 4px; justify-items: start; animation: rise .5s both; }
+.stat .i { width: 18px; height: 18px; color: var(--water); }
+.stat:nth-child(2) .i { color: var(--food); } .stat:nth-child(3) .i { color: var(--home); }
+.stat b { font: 800 18px var(--display); line-height: 1; } .stat span { font-size: 12px; color: var(--muted); }
+.steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; }
+.steps li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; animation: rise .5s both; }
+.steps li + li { border-top: 1px solid var(--line); }
+.steps .si { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; }
+.steps li:nth-child(1) .si { background: var(--home-soft); color: var(--home); }
+.steps li:nth-child(2) .si { background: var(--water-soft); color: var(--water); }
+.steps li:nth-child(3) .si { background: var(--food-soft); color: var(--food); }
+.steps b { display: block; font-size: 15px; } .steps span { font-size: 13px; color: var(--muted); }
+.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.bdg { display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.2; animation: rise .5s both; }
+.bdg .bi { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; border: 2px dashed var(--line); color: var(--muted); }
+.bdg.on .bi { border-style: solid; }
+
+/* result */
+.res-hero { border-radius: 26px; padding: 20px; background: linear-gradient(160deg, var(--water-soft), var(--food-soft)); display: grid; justify-items: center; gap: 8px; text-align: center; }
+.medal { width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center; background: var(--panel); color: var(--food); box-shadow: 0 0 0 6px color-mix(in srgb, var(--panel) 50%, transparent); animation: medal .8s .2s cubic-bezier(.2,1.6,.4,1) both; }
+.medal .i { width: 42px; height: 42px; }
+@keyframes medal { from { opacity: 0; transform: scale(.3) rotate(-40deg); } }
+.res-hero small { font: 700 12px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.res-hero h2 { font-size: 28px; }
+.meters { display: grid; gap: 10px; }
+.meter { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: grid; gap: 8px; }
+.mh { display: flex; align-items: center; gap: 10px; }
+.mh .mi { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; }
+.meter.c .mi { background: var(--food-soft); color: var(--food); } .meter.w .mi { background: var(--water-soft); color: var(--water); }
+.mh span { font-weight: 700; font-size: 14px; }
+.val { font: 800 44px var(--display); line-height: 1; font-variant-numeric: tabular-nums; }
+.meter.c .val { color: var(--food); } .meter.w .val { color: var(--water); }
+.val small { font: 600 14px var(--body); color: var(--muted); margin-left: 6px; }
+.ref { position: relative; height: 10px; background: var(--surface); border-radius: 99px; }
+.ref .me { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 99px; transition: width 1.2s cubic-bezier(.2,1,.3,1); }
+.meter.c .me { background: var(--food); } .meter.w .me { background: var(--water); }
+.ref .avg { position: absolute; top: -5px; bottom: -5px; width: 3px; background: var(--ink); border-radius: 2px; }
+.cmp { font-size: 13px; color: var(--muted); } .cmp b { color: var(--ink); }
+.list { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; margin: 0; padding: 0; list-style: none; }
+.list > li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; align-items: start; padding: 14px; animation: rise .5s both; }
+.list > li + li { border-top: 1px solid var(--line); }
+.list .li { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font: 800 17px var(--display); }
+.tips .li { background: var(--home-soft); color: var(--home); }
+.facts .li { background: var(--water-soft); color: var(--water); }
+.list b { display: block; font-size: 15px; line-height: 1.35; } .list span, .list p { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+.bars { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: grid; gap: 9px; }
+.br { display: grid; grid-template-columns: 92px minmax(0, 1fr) 58px; gap: 8px; align-items: center; font-size: 13px; }
+.br .t { height: 8px; background: var(--surface); border-radius: 99px; overflow: hidden; }
+.br .f { height: 100%; width: 0; border-radius: 99px; transition: width 1s cubic-bezier(.2,1,.3,1); }
+.br.c .f { background: var(--food); } .br.w .f { background: var(--water); }
+.br .v { text-align: right; font: 500 12px var(--mono); }
+.note { font-size: 12px; color: var(--muted); margin: 0; }
+details.data { font-size: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+details.data summary { cursor: pointer; font-weight: 700; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 8px; }
+th, td { text-align: left; padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.n { font-family: var(--mono); white-space: nowrap; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.row2 .btn.ghost { width: auto; padding: 0 16px; }
+.toast { position: absolute; left: 50%; bottom: 96px; transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: var(--surface); font: 600 14px var(--body); padding: 10px 16px; border-radius: 12px; transition: all .3s; pointer-events: none; z-index: 5; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="backdrop" aria-hidden="true">
+  <svg viewBox="0 0 1440 400" preserveAspectRatio="none"><path d="M0 260 C240 170 420 300 720 220 S1200 150 1440 230 V400 H0Z" fill="var(--hill1)"/><path d="M0 320 C300 250 520 360 860 300 S1260 260 1440 310 V400 H0Z" fill="var(--hill2)"/></svg>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main class="app" id="app" data-cat="food">
+  <header class="bar">
+    <div class="bar-row">
+      <button class="icon-btn" id="backBtn" type="button" aria-label="Geri" hidden></button>
+      <span class="brand">
+        <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5C8.5 7 6 10.2 6 13.6a6 6 0 0 0 12 0C18 10.2 15.5 7 12 2.5Z" fill="#fff" fill-opacity=".95"/><path d="M12 19.5v-6.2m0 0c0-2 1.4-3.3 3.2-3.6M12 13.3c-.3-1.6-1.4-2.6-2.9-2.9" stroke="#3d7a2a" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <span class="wordmark"><b>Doğa</b> ile <em>Dönüş</em></span>
+      </span>
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="Sesi kapat"></button>
+    </div>
+    <div class="meta" id="meta" hidden>
+      <span class="cat-chip" id="catChip"></span>
+      <div class="track" aria-hidden="true"><div id="prog"></div></div>
+      <span class="count" id="count"></span>
+    </div>
+  </header>
+  <section class="screen" id="screen">
+    <svg class="hills" viewBox="0 0 430 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C80 40 150 90 230 62 S360 40 430 66 V120 H0Z" fill="var(--cat-soft)"/><path d="M0 96 C90 76 170 112 270 92 S380 84 430 98 V120 H0Z" fill="var(--cat-soft)"/></svg>
+  </section>
+  <footer class="actionbar" id="actions"></footer>
+  <div class="toast" id="toast" role="status"></div>
+</main>
+
+<script>
+// ===== Fiyatlar ve katsayılar: güncellemek için sadece bu bloğu düzenle =====
+const DATA = {
+  updated: "22 Ekim 2026",
+  price: {
+    elec: { v: 2.60, unit: "TL/kWh", src: "Mesken tek zamanlı, vergiler dahil yaklaşık (hesapmatik.com, 2026)" },
+    gas: { v: 15.72, unit: "TL/m³", src: "İstanbul konut, vergiler dahil yaklaşık (BOTAŞ 4 Nisan 2026 tarifesi, akillitarife.com)" },
+    benzin: { v: 76.25, unit: "TL/L", src: "İstanbul Avrupa yakası, 22 Ekim 2026 (Sabah)" },
+    motorin: { v: 96.70, unit: "TL/L", src: "İstanbul Avrupa yakası, 22 Ekim 2026 (Sabah)" },
+    lpg: { v: 41.20, unit: "TL/L", src: "İstanbul Avrupa yakası, 22 Ekim 2026 (Sabah)" },
+    waterTiers: { v: [[15, 52.88], [15, 80.58], [Infinity, 116.55]], unit: "TL/m³", src: "İSKİ konut su + atıksu, KDV hariç, Ocak 2026" }
+  },
+  co2: {
+    elec: { v: 0.474, unit: "kg CO₂/kWh", src: "Türkiye şebekesi, dağıtımdan tüketim, 2022 (Enerji ve Tabii Kaynaklar Bakanlığı)" },
+    gas: { v: 2.0, unit: "kg CO₂/m³", src: "DEFRA dönüşüm katsayıları (yaklaşık)" },
+    benzin: { v: 2.3, unit: "kg CO₂/L", src: "DEFRA (yaklaşık)" },
+    motorin: { v: 2.7, unit: "kg CO₂/L", src: "DEFRA (yaklaşık)" },
+    lpg: { v: 1.6, unit: "kg CO₂/L", src: "DEFRA (yaklaşık)" },
+    transit: { v: 1.2, unit: "kg CO₂/saat", src: "Ortalama 20 km/sa × 0,06 kg/km (yaklaşık)" },
+    flyDom: { v: 150, unit: "kg CO₂/gidiş-dönüş", src: "Yaklaşık 700 km × 2, DEFRA kısa mesafe (yaklaşık)" },
+    flyInt: { v: 600, unit: "kg CO₂/gidiş-dönüş", src: "Avrupa'ya ortalama uçuş (yaklaşık)" },
+    clothes: { v: 15, unit: "kg CO₂/parça", src: "Ortalama giysi üretimi (yaklaşık)" },
+    bottle: { v: 0.08, unit: "kg CO₂/pet şişe", src: "0,5 L pet şişe üretim ve taşıma (yaklaşık)" },
+    diet: { v: { high: 2630, medium: 2040, low: 1720, fish: 1420, veg: 1390, vegan: 1060 }, unit: "kg CO₂e/yıl", src: "Scarborough vd. 2014, beslenme tipine göre" }
+  },
+  // Faturayı bilmeyen ya da yurtta kalan için kişi başı aylık tahminler
+  estimate: {
+    homeElec: { v: 60, unit: "kWh/kişi/ay", src: "Konut ortalaması ~230 kWh/hane/ay ÷ ~3,5 kişi (yaklaşık)" },
+    homeGas: { v: 25, unit: "m³/kişi/ay", src: "Yıllık ortalama, ısınma + sıcak su (yaklaşık)" },
+    dormElec: { v: 70, unit: "kWh/öğrenci/ay", src: "Yurt ortak alanlar + oda payı (tahmini)" },
+    dormGas: { v: 30, unit: "m³/öğrenci/ay", src: "Merkezi ısınma ve sıcak su payı (tahmini)" },
+    heater: { v: 40, unit: "kWh/ay ek", src: "Odada elektrikli ısıtıcı/klima, yıllık ortalama (tahmini)" }
+  },
+  water: {
+    diet: { v: { high: 5400, medium: 4600, low: 3800, fish: 3200, veg: 2900, vegan: 2500 }, unit: "L/gün sanal su", src: "Water Footprint Network ortalamalarından yaklaşık" },
+    clothes: { v: 3000, unit: "L/parça", src: "Pamuklu tişört ≈ 2.700 L (Water Footprint Network)" },
+    shower: { v: 9, unit: "L/dakika", src: "Standart duş başlığı (yaklaşık)" },
+    toilet: { v: 36, unit: "L/gün", src: "Günde ~6 sifon × 6 L (yaklaşık)" },
+    tapOpen: { v: 12, unit: "L/gün ek", src: "Diş fırçalarken açık musluk, 2 × 2 dk × 3 L/dk (yaklaşık)" },
+    kitchen: { v: 20, unit: "L/gün", src: "Evde yemek ve bulaşık payı; yurtta 5 L (yaklaşık)" },
+    bottle: { v: 3, unit: "L/pet şişe", src: "Pet şişe üretiminde kullanılan su (yaklaşık)" }
+  },
+  avg: {
+    co2: { v: 6.8, unit: "ton CO₂e/kişi/yıl", src: "TÜİK 2024 sera gazı envanteri (tüm sektörler)" },
+    water: { v: 3800, unit: "L/kişi/gün", src: "Dünya ortalaması 1.385 m³/yıl (Water Footprint Network)" }
+  }
+};
+
+// ===== Ses: Web Audio ile üretilir, dosya yok =====
+let actx = null, muted = false;
+try { muted = localStorage.getItem("ai_muted") === "1"; } catch (e) {}
+function audio() {
+  if (muted) return null;
+  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); } catch (e) { return null; }
+  return actx;
+}
+function tone(f, dur = .12, type = "sine", vol = .12, delay = 0, slide = 0) {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(f * slide, t + dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
+}
+function whoosh() {
+  const c = audio(); if (!c) return;
+  const len = c.sampleRate * .25, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime;
+  s.buffer = buf; f.type = "bandpass"; f.Q.value = 1.2;
+  f.frequency.setValueAtTime(400, t); f.frequency.exponentialRampToValueAtTime(2400, t + .22);
+  g.gain.value = .09; s.connect(f).connect(g).connect(c.destination); s.start(t);
+}
+const sfx = {
+  tap: () => tone(720, .08, "triangle", .1),
+  pick: () => { tone(660, .1, "sine", .12); tone(990, .14, "sine", .1, .06); },
+  up: () => tone(520, .06, "square", .04, 0, 1.3),
+  down: () => tone(420, .06, "square", .04, 0, .75),
+  next: whoosh,
+  back: () => tone(500, .12, "sine", .08, 0, .6),
+  drop: () => { tone(1200, .18, "sine", .1, 0, .4); tone(1600, .1, "sine", .06, .08, .5); },
+  win: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .35, "triangle", .1, i * .09)),
+  tick: () => tone(1800, .02, "square", .015)
+};
+
+// ===== Efekt: yaprak ve damla patlaması =====
+const fx = document.getElementById("fx"), g2 = fx.getContext("2d");
+let parts = [], fxOn = false;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function burst(x, y, n = 18) {
+  if (reduce) return;
+  const cs = getComputedStyle(document.documentElement);
+  const cols = [cs.getPropertyValue("--water"), cs.getPropertyValue("--food"), cs.getPropertyValue("--home")];
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 5;
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 3, r: 4 + Math.random() * 5, rot: Math.random() * 6, vr: (Math.random() - .5) * .3, life: 1, c: cols[i % 3].trim(), leaf: Math.random() > .5 });
+  }
+  if (!fxOn) { fxOn = true; requestAnimationFrame(loop); }
+}
+function loop() {
+  const dpr = devicePixelRatio || 1;
+  if (fx.width !== innerWidth * dpr) { fx.width = innerWidth * dpr; fx.height = innerHeight * dpr; }
+  g2.setTransform(dpr, 0, 0, dpr, 0, 0); g2.clearRect(0, 0, innerWidth, innerHeight);
+  parts = parts.filter(p => p.life > 0);
+  for (const p of parts) {
+    p.x += p.vx; p.y += p.vy; p.vy += .18; p.vx *= .98; p.rot += p.vr; p.life -= .014;
+    g2.save(); g2.globalAlpha = Math.max(0, p.life); g2.fillStyle = p.c; g2.translate(p.x, p.y); g2.rotate(p.rot);
+    g2.beginPath();
+    if (p.leaf) g2.ellipse(0, 0, p.r * 1.6, p.r * .7, 0, 0, Math.PI * 2);
+    else { g2.moveTo(0, -p.r * 1.4); g2.quadraticCurveTo(p.r, 0, 0, p.r); g2.quadraticCurveTo(-p.r, 0, 0, -p.r * 1.4); }
+    g2.fill(); g2.restore();
+  }
+  if (parts.length) requestAnimationFrame(loop); else { fxOn = false; g2.clearRect(0, 0, innerWidth, innerHeight); }
+}
+function burstAt(el, n) { const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, n); }
+
+// ===== İkonlar: tek tip çizgi ikon seti (dış kaynak yok) =====
+const ICONS = {
+  house: ["M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"],
+  bed: ["M2 19V6", "M2 15h20v4", "M22 15v-3a3 3 0 0 0-3-3h-8v6", { c: [6.5, 11.5, 2] }],
+  key: [{ c: [8, 15, 4.5] }, "M11.2 11.8 20 3", "M17 6l3 3", "M14.5 8.5l2 2"],
+  users: ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", { c: [9, 7, 4] }, "M22 21v-2a4 4 0 0 0-3-3.9", "M16 3.1a4 4 0 0 1 0 7.8"],
+  thermo: ["M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0Z"],
+  heater: [{ r: [3, 7, 18, 11, 2] }, "M7 7v11", "M11 7v11", "M15 7v11", "M6 18v3", "M18 18v3", "M10 3c1 1 1 2 0 3", "M14 3c1 1 1 2 0 3"],
+  plug: ["M9 2v5", "M15 2v5", "M6 7h12v4a6 6 0 0 1-12 0z", "M12 17v5"],
+  help: [{ c: [12, 12, 10] }, "M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3", "M12 17h.01"],
+  drop: ["M12 2.7C9 7 6 10 6 14a6 6 0 0 0 12 0c0-4-3-7-6-11.3Z"],
+  shower: ["M4 21V7a4 4 0 0 1 8 0", "M9 9h6a3 3 0 0 0-6 0Z", "M10 13v.01", "M14 13v.01", "M12 16v.01", "M10 19v.01", "M14 19v.01", "M16 16v.01"],
+  tap: ["M4 9h7a3 3 0 0 1 3 3v1h4v-2a5 5 0 0 0-5-5H4", "M8 6V3", "M5 3h6", "M16 17c0 1.5 1 2.5 1 3.5a1 1 0 0 1-2 0c0-1 1-2 1-3.5Z"],
+  hand: ["M18 11V6a2 2 0 0 0-4 0v5", "M14 10V4a2 2 0 0 0-4 0v6", "M10 10.5V6a2 2 0 0 0-4 0v8", "M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"],
+  bottle: ["M10 2h4", "M10 2v3L8 8v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8l-2-3V2", "M8 12h8", "M8 16h8"],
+  walk: [{ c: [13, 4, 2] }, "M9 21l2.5-5.5L14 18v3", "M8 11l3.5-3 3 2.5 3 1", "M11.5 8 10.5 15"],
+  bus: ["M5 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v12H5z", "M5 11h14", "M8 18v3", "M16 18v3", "M8.5 15h.01", "M15.5 15h.01"],
+  van: ["M2 7h12l5 5v5H2z", "M14 7v5h5", { c: [6, 17, 2] }, { c: [16, 17, 2] }],
+  car: ["M3 13l2-6h14l2 6v4H3z", "M3 13h18", { c: [7, 17, 2] }, { c: [17, 17, 2] }],
+  fuel: ["M3 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16", "M2 21h13", "M3 10h11", "M14 8h2a2 2 0 0 1 2 2v6a2 2 0 0 0 4 0V8l-3-3"],
+  flame: ["M12 22a7 7 0 0 0 7-7c0-4-3-6-4-9-2 2-3 4-3 6-1-1-2-2-2-4-3 2-5 5-5 7a7 7 0 0 0 7 7Z"],
+  zap: ["M13 2 4 14h7l-1 8 9-12h-7z"],
+  plane: ["M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"],
+  globe: [{ c: [12, 12, 10] }, "M2 12h20", "M12 2a15 15 0 0 1 0 20", "M12 2a15 15 0 0 0 0 20"],
+  utensils: ["M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2", "M7 2v20", "M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"],
+  steak: ["M15.4 15.6A6 6 0 1 0 8.4 8.6c-.6 1.6-.4 3.4-.4 5L4 17.5a1.8 1.8 0 1 0 2.5 2.5L10.5 16c1.6 0 3.4.2 4.9-.4Z", { c: [12.5, 11.5, 1.5] }],
+  drum: ["M15.4 15.6A6 6 0 1 0 8.4 8.6c-.6 1.6-.4 3.4-.4 5L4 17.5a1.8 1.8 0 1 0 2.5 2.5L10.5 16c1.6 0 3.4.2 4.9-.4Z"],
+  salad: ["M7 21h10", "M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z", "M11.4 12A4 4 0 0 1 7 7.5", "M13 12a4 4 0 0 1 6-4.5"],
+  fish: ["M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z", "M18 12v.5", "M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"],
+  egg: ["M12 22c6.23-.05 7.87-5.57 7.5-10-.36-4.34-3.95-9.96-7.5-10-3.55.04-7.14 5.66-7.5 10-.37 4.43 1.27 9.95 7.5 10Z"],
+  leaf: ["M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z", "M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"],
+  shirt: ["M20.4 3.5 16 2a4 4 0 0 1-8 0L3.6 3.5a2 2 0 0 0-1.3 2.2l.6 3.5a1 1 0 0 0 1 .8H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.2a1 1 0 0 0 1-.8l.5-3.5a2 2 0 0 0-1.3-2.2z"],
+  wheat: ["M2 22 16 8", "M3.5 12.5 5 11l1.5 1.5a3.5 3.5 0 0 1 0 5L5 19l-1.5-1.5a3.5 3.5 0 0 1 0-5Z", "M7.5 8.5 9 7l1.5 1.5a3.5 3.5 0 0 1 0 5L9 15l-1.5-1.5a3.5 3.5 0 0 1 0-5Z", "M11.5 4.5 13 3l1.5 1.5a3.5 3.5 0 0 1 0 5L13 11l-1.5-1.5a3.5 3.5 0 0 1 0-5Z"],
+  timer: ["M10 2h4", "M12 14l3-3", { c: [12, 14, 8] }],
+  list: ["M11 6h10", "M11 12h10", "M11 18h10", "M3 6l1.5 1.5L7 5", "M3 12l1.5 1.5L7 11", "M3 18l1.5 1.5L7 17"],
+  award: [{ c: [12, 8, 6] }, "M15.5 12.9 17 22l-5-3-5 3 1.5-9.1"],
+  vol: ["M11 5 6 9H2v6h4l5 4z", "M15.5 8.5a5 5 0 0 1 0 7", "M19 5a10 10 0 0 1 0 14"],
+  mute: ["M11 5 6 9H2v6h4l5 4z", "M22 9l-6 6", "M16 9l6 6"],
+  left: ["M19 12H5", "M12 19l-7-7 7-7"],
+  right: ["M5 12h14", "M12 5l7 7-7 7"],
+  check: ["M20 6 9 17l-5-5"],
+  copy: [{ r: [8, 8, 14, 14, 2] }, "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"],
+  redo: ["M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", "M3 3v5h5"],
+  swap: ["M7 16V4", "M3 8l4-4 4 4", "M17 8v12", "M21 16l-4 4-4-4"],
+  trees: ["M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z", "M7 16v6", "M13 19v3", "M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"],
+  sprout: ["M7 20h10", "M10 20c5.5-2.5.8-6.4 3-10", "M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z", "M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"],
+  minus: ["M5 12h14"], plus: ["M12 5v14", "M5 12h14"],
+  bulb: ["M9 18h6", "M10 22h4", "M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"]
+};
+function ic(name, cls = "") {
+  const parts = (ICONS[name] || ICONS.help).map(p => typeof p === "string" ? `<path d="${p}"/>` : p.c ? `<circle cx="${p.c[0]}" cy="${p.c[1]}" r="${p.c[2]}"/>` : `<rect x="${p.r[0]}" y="${p.r[1]}" width="${p.r[2]}" height="${p.r[3]}" rx="${p.r[4]}"/>`).join("");
+  return `<svg class="i ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${parts}</svg>`;
+}
+
+// ===== Sorular =====
+const A = {};
+const isDorm = () => A.home === "yurt";
+const CATS = {
+  start: { c: "home", l: "Başlarken", i: "house" }, ev: { c: "home", l: "Ev", i: "house" }, yurt: { c: "home", l: "Yurt", i: "bed" },
+  enerji: { c: "energy", l: "Enerji", i: "zap" }, su: { c: "water", l: "Su", i: "drop" },
+  ulasim: { c: "move", l: "Ulaşım", i: "bus" }, seyahat: { c: "move", l: "Seyahat", i: "plane" },
+  beslenme: { c: "food", l: "Beslenme", i: "utensils" }, alisveris: { c: "food", l: "Alışveriş", i: "shirt" }
+};
+const STEPS = [
+  { id: "home", cat: "start", q: "Şu an nerede kalıyorsun?", sub: "Ev enerjisi ve su soruları buna göre değişecek.", type: "choice", opts: [
+    { v: "aile", i: "house", l: "Ailemle evde" },
+    { v: "yurt", i: "bed", l: "Yurtta", s: "Fatura sormayız, alışkanlıklardan hesaplarız" },
+    { v: "ogrenci", i: "key", l: "Öğrenci evinde", s: "Arkadaşlarla faturayı bölüşüyoruz" }] },
+  { id: "people", when: () => !isDorm(), cat: "ev", i: "users", q: "Evde kaç kişi yaşıyorsunuz?", sub: "Faturalar kişi başına bölünecek.", type: "num", min: 1, max: 12, def: 4, unit: "kişi" },
+  { id: "room", when: isDorm, cat: "yurt", q: "Odanda kaç kişi kalıyorsunuz?", type: "choice", opts: [
+    { v: 1, t: "1", l: "Tek kişilik" }, { v: 2, t: "2", l: "İki kişilik" }, { v: 3, t: "3", l: "Üç kişilik" }, { v: 4, t: "4+", l: "Dört ve üzeri" }] },
+  { id: "heater", when: isDorm, cat: "yurt", q: "Yurtta nasıl ısınıyorsunuz?", sub: "Odada kendi ısıtıcın ya da klima varsa elektrik tüketimin artar.", type: "choice", opts: [
+    { v: "merkezi", i: "thermo", l: "Kalorifer / merkezi sistem" }, { v: "elektrik", i: "plug", l: "Odada ısıtıcı ya da klima" }, { v: "bilmiyorum", i: "help", l: "Bilmiyorum" }] },
+  { id: "elec", when: () => !isDorm(), cat: "enerji", i: "zap", q: "Aylık elektrik faturanız ne kadar?", type: "bill", units: ["TL", "kWh"], price: () => DATA.price.elec.v, def: 900 },
+  { id: "gas", when: () => !isDorm(), cat: "enerji", i: "flame", q: "Aylık doğalgaz faturanız ne kadar?", sub: "Kışın yüksek, yazın düşük olur. Ortalama bir ay düşün.", type: "bill", units: ["TL", "m³"], price: () => DATA.price.gas.v, def: 1100, none: "Doğalgaz yok" },
+  { id: "water", when: () => !isDorm(), cat: "su", i: "drop", q: "Aylık su faturanız ne kadar?", sub: "İSKİ'nin kademeli konut tarifesiyle m³'e çevrilir.", type: "bill", units: ["TL", "m³"], water: true, def: 1100 },
+  { id: "shower", cat: "su", i: "shower", q: "Günde ortalama kaç dakika duş alıyorsun?", type: "num", min: 0, max: 40, def: 10, unit: "dakika", sound: "drop" },
+  { id: "tap", cat: "su", q: "Dişlerini fırçalarken musluk açık mı kalıyor?", type: "choice", opts: [
+    { v: true, i: "tap", l: "Evet, genelde açık" }, { v: false, i: "hand", l: "Hayır, kapatıyorum" }] },
+  { id: "bottle", cat: "su", i: "bottle", q: "Günde kaç pet şişe su içiyorsun?", sub: "Matara ya da musluk suyu kullanıyorsan 0.", type: "num", min: 0, max: 10, def: 1, unit: "şişe" },
+  { id: "commute", cat: "ulasim", q: "Okula ya da işe genelde nasıl gidiyorsun?", type: "choice", opts: [
+    { v: "yuru", i: "walk", l: "Yürüyerek ya da bisikletle" }, { v: "toplu", i: "bus", l: "Otobüs, metro, minibüs" }, { v: "servis", i: "van", l: "Servisle" }, { v: "araba", i: "car", l: "Arabayla" }] },
+  { id: "transit", when: () => A.commute === "toplu" || A.commute === "servis", cat: "ulasim", i: "timer", q: "Haftada toplam kaç saatin yolda geçiyor?", type: "num", min: 0, max: 40, def: 5, unit: "saat" },
+  { id: "fuelType", when: () => A.commute === "araba", cat: "ulasim", q: "Araç ne yakıyor?", type: "choice", opts: [
+    { v: "benzin", i: "fuel", l: "Benzin" }, { v: "motorin", i: "fuel", l: "Motorin (dizel)" }, { v: "lpg", i: "flame", l: "LPG" }, { v: "elektrik", i: "zap", l: "Elektrikli" }] },
+  { id: "fuel", when: () => A.commute === "araba" && A.fuelType !== "elektrik", cat: "ulasim", i: "fuel", q: "Sana düşen aylık yakıt ne kadar?", sub: "Arabayı paylaşıyorsan kendi payını yaz.", type: "bill", units: ["TL", "litre"], price: () => DATA.price[A.fuelType].v, def: 1500 },
+  { id: "flyDom", cat: "seyahat", i: "plane", q: "Yılda kaç kez yurt içinde uçuyorsun?", sub: "Gidiş-dönüş bir sayılır.", type: "num", min: 0, max: 20, def: 1, unit: "gidiş-dönüş" },
+  { id: "flyInt", cat: "seyahat", i: "globe", q: "Yılda kaç kez yurt dışına uçuyorsun?", sub: "Gidiş-dönüş bir sayılır. Tatil, aile ziyareti, okul gezisi hepsi dahil.", type: "num", min: 0, max: 20, def: 0, unit: "gidiş-dönüş" },
+  { id: "diet", cat: "beslenme", q: "Nasıl besleniyorsun?", sub: "Yurt yemekhanesinde yiyorsan oradaki tabağını düşün.", type: "choice", opts: [
+    { v: "high", i: "steak", l: "Hemen her öğün et" }, { v: "medium", i: "drum", l: "Günde bir kez et" }, { v: "low", i: "salad", l: "Haftada birkaç kez et" },
+    { v: "fish", i: "fish", l: "Et yok, balık var" }, { v: "veg", i: "egg", l: "Vejetaryen" }, { v: "vegan", i: "leaf", l: "Vegan" }] },
+  { id: "clothes", cat: "alisveris", i: "shirt", q: "Ayda kaç parça yeni kıyafet alıyorsun?", sub: "İkinci el ve takas sayılmaz.", type: "num", min: 0, max: 20, def: 2, unit: "parça" }
+];
+
+// ===== Hesap =====
+function waterTlToM3(tl) {
+  let m3 = 0;
+  for (const [size, price] of DATA.price.waterTiers.v) { const cost = size * price; if (tl <= cost) return m3 + tl / price; m3 += size; tl -= cost; }
+  return m3;
+}
+function waterM3ToTl(m3) {
+  let tl = 0;
+  for (const [size, price] of DATA.price.waterTiers.v) { const u = Math.min(m3, size); tl += u * price; m3 -= u; if (m3 <= 0) break; }
+  return tl;
+}
+// bill answer: {mode: "tl"|"q"|"none"|"unk", v}
+function billQty(id) {
+  const b = A[id]; if (!b) return null;
+  if (b.mode === "none") return 0;
+  if (b.mode === "unk") return null;
+  if (b.mode === "q") return b.v;
+  const st = STEPS.find(s => s.id === id);
+  return st.water ? waterTlToM3(b.v) : b.v / st.price();
+}
+function calc() {
+  const dorm = isDorm(), E = DATA.estimate, W = DATA.water, C = DATA.co2;
+  const people = dorm ? 1 : Math.max(1, A.people || 1);
+  let elecPP, gasPP, directL, estimated = [];
+  if (dorm) {
+    elecPP = E.dormElec.v + (A.heater === "elektrik" ? E.heater.v : 0) - (A.room > 1 ? 5 * (A.room - 1) : 0);
+    gasPP = A.heater === "elektrik" ? E.dormGas.v * .3 : E.dormGas.v;
+  } else {
+    const e = billQty("elec"), g = billQty("gas");
+    elecPP = e == null ? (estimated.push("elektrik"), E.homeElec.v) : e / people;
+    gasPP = g == null ? (estimated.push("doğalgaz"), E.homeGas.v) : g / people;
+  }
+  const habitL = (A.shower || 0) * W.shower.v + W.toilet.v + (A.tap ? W.tapOpen.v : 4) + (dorm ? 5 : W.kitchen.v);
+  const wq = dorm ? null : billQty("water");
+  if (wq == null) { directL = habitL; if (!dorm) estimated.push("su"); } else directL = wq * 1000 / 30 / people;
+
+  let car = 0;
+  if (A.commute === "araba") {
+    if (A.fuelType === "elektrik") car = 150 * 12 * C.elec.v;
+    else { const f = billQty("fuel"); car = (f || 0) * C[A.fuelType].v * 12; }
+  }
+  const transitH = (A.commute === "toplu" || A.commute === "servis") ? (A.transit || 0) : 0;
+  const co2 = {
+    "Ev enerjisi": (elecPP * C.elec.v + gasPP * C.gas.v) * 12,
+    "Ulaşım": car + transitH * 52 * C.transit.v,
+    "Uçuş": (A.flyDom || 0) * C.flyDom.v + (A.flyInt || 0) * C.flyInt.v,
+    "Beslenme": C.diet.v[A.diet || "medium"],
+    "Alışveriş": (A.clothes || 0) * 12 * C.clothes.v + (A.bottle || 0) * 365 * C.bottle.v
+  };
+  const water = {
+    "Evde kullanım": directL,
+    "Yiyecek": W.diet.v[A.diet || "medium"],
+    "Kıyafet": (A.clothes || 0) * 12 * W.clothes.v / 365,
+    "Pet şişe": (A.bottle || 0) * W.bottle.v
+  };
+  return { co2, water, directL, habitL, car, elecPP, estimated, totalCo2: Object.values(co2).reduce((a, b) => a + b, 0) / 1000, totalW: Object.values(water).reduce((a, b) => a + b, 0) };
+}
+const fmt = (n, d = 0) => n.toLocaleString("tr-TR", { maximumFractionDigits: d, minimumFractionDigits: d });
+
+function tips(r) {
+  const L = [], W = DATA.water, C = DATA.co2;
+  const sh = A.shower || 0;
+  if (sh > 5) L.push({ s: (sh - 5) * W.shower.v * 365 * .02, t: `Duşu ${sh} dakikadan 5 dakikaya indir`, d: `Yılda yaklaşık ${fmt((sh - 5) * W.shower.v * 365)} litre su kurtarırsın.` });
+  if (A.tap) L.push({ s: W.tapOpen.v * 365 * .02, t: "Diş fırçalarken musluğu kapat", d: `Yılda yaklaşık ${fmt((W.tapOpen.v - 4) * 365)} litre su.` });
+  const order = ["high", "medium", "low", "fish", "veg", "vegan"], i = order.indexOf(A.diet);
+  if (i >= 0 && i < 2) {
+    const n = order[i + 1], dc = C.diet.v[A.diet] - C.diet.v[n], dw = W.diet.v[A.diet] - W.diet.v[n];
+    L.push({ s: dc, t: "Haftada 3–4 gün etsiz beslen", d: `Yılda yaklaşık ${fmt(dc)} kg CO₂ ve günde ${fmt(dw)} litre sanal su.` });
+  }
+  if (r.car > 100) L.push({ s: r.car * .3, t: "Kısa yolları yürü ya da bisiklete bin", d: `Araba kullanımını %30 azaltmak yılda ${fmt(r.car * .3)} kg CO₂ eder.` });
+  const fd = (A.flyDom || 0) * C.flyDom.v;
+  if (fd > 0) L.push({ s: fd * .8, t: "Yurt içinde uçak yerine tren ya da otobüs dene", d: `Yılda yaklaşık ${fmt(fd * .8)} kg CO₂ daha az.` });
+  if (isDorm() && A.heater === "elektrik") L.push({ s: DATA.estimate.heater.v * 12 * C.elec.v * .5, t: "Odadaki ısıtıcıyı daha az çalıştır, kat kat giyin", d: `Isıtıcıyı yarı yarıya azaltmak yılda ${fmt(DATA.estimate.heater.v * 6 * C.elec.v)} kg CO₂.` });
+  const home = r.co2["Ev enerjisi"];
+  if (!isDorm() && home > 50) L.push({ s: home * .1, t: "Bekleme modundaki cihazları kapat, kombiyi 1 °C düşür", d: `Ev enerjinde yaklaşık %10, kişi başı yılda ${fmt(home * .1)} kg CO₂.` });
+  if ((A.bottle || 0) > 0) L.push({ s: A.bottle * 365 * C.bottle.v, t: "Pet şişe yerine matara taşı", d: `Yılda ${fmt(A.bottle * 365)} şişe ve ${fmt(A.bottle * 365 * C.bottle.v)} kg CO₂ daha az.` });
+  if ((A.clothes || 0) > 0) L.push({ s: A.clothes * 6 * C.clothes.v, t: "Yeni kıyafetin yarısını ikinci el ya da takasla al", d: `Yılda ${fmt(A.clothes * 6 * C.clothes.v)} kg CO₂ ve ${fmt(A.clothes * 6 * W.clothes.v)} litre su.` });
+  return L.sort((a, b) => b.s - a.s).slice(0, 3);
+}
+const FACTS = [
+  ["shower", "Duşta her dakika yaklaşık 9 litre su akar. 5 dakikalık duş 45 litre eder."],
+  ["shirt", "Bir pamuklu tişört üretmek için yaklaşık 2.700 litre su harcanır."],
+  ["steak", "1 kg sığır eti üretmek için yaklaşık 15.400 litre su gerekir."],
+  ["zap", "Türkiye'de 1 kWh elektrik yaklaşık 0,47 kg CO₂ demek."],
+  ["wheat", "1 kg ekmeğin arkasında yaklaşık 1.600 litre su var."],
+  ["tap", "Diş fırçalarken açık kalan musluk dakikada 3 litre kadar su harcar."]
+];
+const PERSONAS = [
+  { max: 2.5, i: "trees", n: "Orman Bekçisi" },
+  { max: 4, i: "leaf", n: "Yeşil Yolcu" },
+  { max: 6, i: "sprout", n: "Dönüşüm Yolunda" },
+  { max: Infinity, i: "flame", n: "Isınma Turunda" }
+];
+const persona = t => PERSONAS.find(p => t < p.max);
+
+// ===== Kabuk =====
+const app = document.getElementById("app"), screen = document.getElementById("screen"), actions = document.getElementById("actions");
+const backBtn = document.getElementById("backBtn"), soundBtn = document.getElementById("soundBtn");
+const meta = document.getElementById("meta"), catChip = document.getElementById("catChip"), prog = document.getElementById("prog"), count = document.getElementById("count");
+backBtn.innerHTML = ic("left");
+function syncSound() { soundBtn.innerHTML = ic(muted ? "mute" : "vol"); soundBtn.setAttribute("aria-label", muted ? "Sesi aç" : "Sesi kapat"); }
+soundBtn.onclick = () => { muted = !muted; try { localStorage.setItem("ai_muted", muted ? "1" : "0"); } catch (e) {} syncSound(); sfx.tap(); };
+syncSound();
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("show"), 1800); }
+
+let history = [], cur = -1;
+const visible = () => STEPS.filter(s => !s.when || s.when());
+
+function swap(html, dir = 1) {
+  screen.querySelectorAll(".page.out").forEach(x => x.remove());
+  const old = screen.querySelector(".page");
+  if (old) { old.classList.remove("in", "back"); old.classList.add("out"); if (dir < 0) old.classList.add("back"); setTimeout(() => old.remove(), 240); }
+  const el = document.createElement("div");
+  el.className = "page in" + (dir < 0 ? " back" : "");
+  el.innerHTML = html; screen.appendChild(el); screen.scrollTop = 0;
+  return el;
+}
+function setBar(cat) {
+  const vis = visible();
+  if (cur === -1) { meta.hidden = true; backBtn.hidden = true; app.dataset.cat = "food"; return; }
+  meta.hidden = false; backBtn.hidden = false;
+  if (cur === "done") { app.dataset.cat = "food"; catChip.innerHTML = ic("award") + "Sonuç"; prog.style.width = "100%"; count.textContent = `${vis.length}/${vis.length}`; return; }
+  const c = CATS[cat], idx = vis.indexOf(STEPS[cur]) + 1;
+  app.dataset.cat = c.c; catChip.innerHTML = ic(c.i) + c.l;
+  prog.style.width = (idx / vis.length * 100) + "%"; count.textContent = `${idx}/${vis.length}`;
+}
+
+function intro() {
+  cur = -1; history = []; setBar();
+  swap(`
+    <div class="hero" aria-hidden="true">
+      <svg class="globe" viewBox="0 0 200 200">
+        <defs><clipPath id="gc"><circle cx="100" cy="100" r="62"/></clipPath></defs>
+        <circle cx="100" cy="100" r="62" fill="var(--panel)"/>
+        <g clip-path="url(#gc)">
+          <path class="waves" d="M20 112 q20 -10 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V200 H20 Z" fill="var(--water)" opacity=".85"/>
+          <path d="M62 70 q14 -16 34 -8 q10 10 -2 20 q-14 4 -12 18 q-6 10 -18 2 q-10 -14 -2 -32 Z" fill="var(--food)"/>
+          <path d="M118 58 q18 2 22 18 q-8 8 -20 2 q-8 -8 -2 -20 Z" fill="var(--food)" opacity=".85"/>
+          <path d="M120 118 q16 -6 24 8 q-6 14 -22 10 q-8 -8 -2 -18 Z" fill="var(--food)" opacity=".9"/>
+        </g>
+        <circle cx="100" cy="100" r="62" fill="none" stroke="var(--ink)" stroke-opacity=".1" stroke-width="2"/>
+        <g class="orbit"><path d="M100 18 c-6 9 -10 14 -10 19 a10 10 0 0 0 20 0 c0 -5 -4 -10 -10 -19 Z" fill="var(--water)"/></g>
+        <g class="orbit r"><path d="M168 150 c10 -14 26 -14 30 -12 c-2 12 -16 22 -30 12 Z" fill="var(--food)"/></g>
+      </svg>
+    </div>
+    <h1>Su ve karbon ayak izin ne kadar?</h1>
+    <div class="stats">
+      <div class="stat" style="animation-delay:.1s">${ic("timer")}<b>2 dk</b><span>süre</span></div>
+      <div class="stat" style="animation-delay:.18s">${ic("list")}<b>11–15</b><span>soru</span></div>
+      <div class="stat" style="animation-delay:.26s">${ic("award")}<b>4</b><span>rozet</span></div>
+    </div>
+    <h3>Nasıl çalışır</h3>
+    <ol class="steps">
+      <li style="animation-delay:.2s"><span class="si">${ic("house")}</span><div><b>Nerede kaldığını seç</b><span>Evde ya da yurtta, sorular sana göre değişir.</span></div></li>
+      <li style="animation-delay:.3s"><span class="si">${ic("drop")}</span><div><b>Alışkanlıklarını anlat</b><span>Duş, ulaşım, beslenme, alışveriş.</span></div></li>
+      <li style="animation-delay:.4s"><span class="si">${ic("award")}</span><div><b>Ayak izini ve rozetini gör</b><span>Senin için en etkili 3 adımla birlikte.</span></div></li>
+    </ol>
+    <h3>Rozetler</h3>
+    <div class="badges">${PERSONAS.map((p, k) => `<div class="bdg" style="animation-delay:${.3 + k * .08}s"><span class="bi">${ic(p.i)}</span>${p.n}</div>`).join("")}</div>`);
+  actions.innerHTML = `<button class="btn primary" id="start" type="button">Başla ${ic("right")}</button>`;
+  actions.querySelector("#start").onclick = e => { audio(); sfx.win(); burstAt(e.currentTarget, 24); go(STEPS.indexOf(visible()[0]), 1); };
+}
+
+function go(i, dir = 1) {
+  if (dir > 0 && cur >= 0) history.push(cur);
+  cur = i;
+  const s = STEPS[i];
+  setBar(s.cat);
+  let body = "", qic = s.i ? `<span class="q-ic">${ic(s.i)}</span>` : "";
+  if (s.type === "choice") {
+    body = `<div class="opts" role="radiogroup">${s.opts.map((o, k) => `<button type="button" role="radio" aria-checked="${A[s.id] === o.v}" class="opt${A[s.id] === o.v ? " sel" : ""}" data-k="${k}" style="animation-delay:${80 + k * 50}ms"><span class="oi">${o.t || ic(o.i)}</span><span>${o.l}${o.s ? `<small>${o.s}</small>` : ""}</span><span class="radio">${ic("check")}</span></button>`).join("")}</div>`;
+  } else if (s.type === "num") {
+    const v = A[s.id] ?? s.def;
+    body = `<div class="numbox"><div class="num"><button type="button" data-d="-1" aria-label="Azalt">${ic("minus")}</button><output id="nv">${v}</output><button type="button" data-d="1" aria-label="Artır">${ic("plus")}</button></div>
+      <div class="num-unit">${s.unit}</div>
+      <input type="range" id="rng" min="${s.min}" max="${s.max}" step="1" value="${v}" aria-label="${s.q}"></div>`;
+  } else if (s.type === "bill") {
+    const b = A[s.id] && (A[s.id].mode === "tl" || A[s.id].mode === "q") ? A[s.id] : { mode: "tl", v: s.def };
+    body = `<div class="billbox">
+      <div class="seg" role="group" aria-label="Birim"><button type="button" data-m="tl" aria-pressed="${b.mode === "tl"}">${s.units[0]} ile</button><button type="button" data-m="q" aria-pressed="${b.mode === "q"}">${s.units[1]} ile</button></div>
+      <label class="field"><input type="number" inputmode="decimal" id="bv" min="0" step="any" value="${b.v}" aria-label="${s.q}"><span id="bu">${b.mode === "tl" ? s.units[0] : s.units[1]}</span></label>
+      <div class="conv" id="cv"></div></div>`;
+  }
+  const el = swap(`${qic}<h2>${s.q}</h2>${s.sub ? `<p class="sub">${s.sub}</p>` : ""}${body}`, dir);
+
+  if (s.type === "choice") {
+    actions.innerHTML = `<div class="hint">Bir seçeneğe dokun</div>`;
+    el.querySelectorAll(".opt").forEach(btn => btn.onclick = () => {
+      el.querySelectorAll(".opt").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-checked", "false"); });
+      btn.classList.add("sel"); btn.setAttribute("aria-checked", "true"); A[s.id] = s.opts[+btn.dataset.k].v;
+      sfx.pick(); burstAt(btn.querySelector(".radio"), 10); setTimeout(next, 380);
+    });
+  } else if (s.type === "num") {
+    actions.innerHTML = `<button class="btn primary" id="nx" type="button">Devam ${ic("right")}</button>`;
+    const out = el.querySelector("#nv"), rng = el.querySelector("#rng");
+    A[s.id] = A[s.id] ?? s.def;
+    const set = v => {
+      v = Math.min(s.max, Math.max(s.min, v)); if (v === A[s.id]) return;
+      const up = v > A[s.id]; A[s.id] = v; out.textContent = v; rng.value = v;
+      out.classList.remove("bump"); void out.offsetWidth; out.classList.add("bump");
+      (s.sound && up ? sfx.drop : up ? sfx.up : sfx.down)();
+    };
+    el.querySelectorAll("[data-d]").forEach(b => b.onclick = () => set(A[s.id] + +b.dataset.d));
+    rng.oninput = () => set(+rng.value);
+    actions.querySelector("#nx").onclick = e => { sfx.tap(); burstAt(e.currentTarget, 8); next(); };
+  } else if (s.type === "bill") {
+    actions.innerHTML = `<div class="alt">${s.none ? `<button type="button" class="btn ghost" id="none">${s.none}</button>` : ""}<button type="button" class="btn ghost" id="unk">${ic("help")}Bilmiyorum</button></div><button class="btn primary" id="nx" type="button">Devam ${ic("right")}</button>`;
+    const inp = el.querySelector("#bv"), cv = el.querySelector("#cv"), bu = el.querySelector("#bu");
+    let mode = A[s.id] && A[s.id].mode === "q" ? "q" : "tl";
+    const conv = () => {
+      const v = Math.max(0, parseFloat(inp.value) || 0);
+      const txt = s.water ? (mode === "tl" ? `≈ ${fmt(waterTlToM3(v), 1)} m³ su / ay` : `≈ ${fmt(waterM3ToTl(v))} TL / ay (KDV hariç)`)
+        : (mode === "tl" ? `≈ ${fmt(v / s.price(), 0)} ${s.units[1]} / ay` : `≈ ${fmt(v * s.price())} TL / ay`);
+      cv.innerHTML = ic("swap") + txt;
+    };
+    el.querySelectorAll("[data-m]").forEach(b => b.onclick = () => {
+      if (b.dataset.m === mode) return;
+      const v = Math.max(0, parseFloat(inp.value) || 0);
+      const q = mode === "tl" ? (s.water ? waterTlToM3(v) : v / s.price()) : v;
+      mode = b.dataset.m;
+      inp.value = mode === "tl" ? Math.round(s.water ? waterM3ToTl(q) : q * s.price()) : Math.round(q * 10) / 10;
+      bu.textContent = mode === "tl" ? s.units[0] : s.units[1];
+      el.querySelectorAll("[data-m]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.m === mode)));
+      sfx.tap(); conv();
+    });
+    inp.oninput = conv; conv();
+    inp.onkeydown = e => { if (e.key === "Enter") actions.querySelector("#nx").click(); };
+    actions.querySelector("#nx").onclick = e => { A[s.id] = { mode, v: Math.max(0, parseFloat(inp.value) || 0) }; sfx.tap(); burstAt(e.currentTarget, 8); next(); };
+    actions.querySelector("#unk").onclick = () => { A[s.id] = { mode: "unk" }; sfx.tap(); next(); };
+    if (s.none) actions.querySelector("#none").onclick = () => { A[s.id] = { mode: "none" }; sfx.tap(); next(); };
+  }
+  sfx.next();
+}
+function next() {
+  const vis = visible(), pos = vis.indexOf(STEPS[cur]);
+  if (pos < vis.length - 1) go(STEPS.indexOf(vis[pos + 1]), 1); else { history.push(cur); result(); }
+}
+backBtn.onclick = () => { sfx.back(); if (!history.length) return intro(); go(history.pop(), -1); };
+
+function countUp(el, to, d, ms = 1400) {
+  if (reduce) { el.firstChild.nodeValue = fmt(to, d); return; }
+  const t0 = performance.now(); let last = 0;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    el.firstChild.nodeValue = fmt(to * e, d);
+    if (now - last > 70 && k < 1) { sfx.tick(); last = now; }
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+function result() {
+  cur = "done"; setBar();
+  const r = calc(), t = tips(r), p = persona(r.totalCo2);
+  const barsHtml = (obj, cls, f) => { const max = Math.max(...Object.values(obj), 1); return Object.entries(obj).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="br ${cls}"><span>${k}</span><div class="t"><div class="f" data-w="${(v / max * 100).toFixed(1)}"></div></div><span class="v">${f(v)}</span></div>`).join(""); };
+  const sc = Math.max(r.totalCo2, DATA.avg.co2.v) * 1.1, sw = Math.max(r.totalW, DATA.avg.water.v) * 1.1;
+  const pc = Math.round((r.totalCo2 / DATA.avg.co2.v - 1) * 100), pw = Math.round((r.totalW / DATA.avg.water.v - 1) * 100);
+  const rel = x => x >= 0 ? `<b>%${x} üstündesin</b>` : `<b>%${-x} altındasın</b>`;
+  const el = swap(`
+    <div class="res-hero"><span class="medal">${ic(p.i)}</span><small>Rozetin</small><h2>${p.n}</h2></div>
+    <div class="meters">
+      <div class="meter c"><div class="mh"><span class="mi">${ic("leaf")}</span><span>Karbon ayak izi</span></div>
+        <div class="val" id="vc">0<small>ton CO₂ / yıl</small></div>
+        <div class="ref"><div class="me" data-w="${(r.totalCo2 / sc * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.co2.v / sc * 100).toFixed(1)}%"></div></div>
+        <span class="cmp">Çizgi Türkiye ortalaması (${fmt(DATA.avg.co2.v, 1)} t). Sen ${rel(pc)}.</span></div>
+      <div class="meter w"><div class="mh"><span class="mi">${ic("drop")}</span><span>Su ayak izi</span></div>
+        <div class="val" id="vw">0<small>litre / gün</small></div>
+        <div class="ref"><div class="me" data-w="${(r.totalW / sw * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.water.v / sw * 100).toFixed(1)}%"></div></div>
+        <span class="cmp">Çizgi dünya ortalaması (${fmt(DATA.avg.water.v)} L). Sen ${rel(pw)}.</span></div>
+    </div>
+    <h3>Senin için en etkili 3 adım</h3>
+    <ol class="list tips">${t.length ? t.map((x, k) => `<li style="animation-delay:${700 + k * 150}ms"><span class="li">${k + 1}</span><div><b>${x.t}</b><span>${x.d}</span></div></li>`).join("") : `<li><span class="li">${ic("check")}</span><div><b>Harika gidiyorsun</b><span>Büyük bir tasarruf alanı görünmüyor. Bildiklerini gruba anlat.</span></div></li>`}</ol>
+    <h3>Nereden geliyor?</h3>
+    <div class="bars">${barsHtml(r.co2, "c", v => v >= 1000 ? fmt(v / 1000, 1) + " t" : fmt(v) + " kg")}</div>
+    <div class="bars">${barsHtml(r.water, "w", v => fmt(v) + " L")}</div>
+    <p class="note">Evde doğrudan kullandığın su günde ${fmt(r.directL)} litre${r.estimated.length ? `. Bilmediğin ${r.estimated.join(", ")} için ortalama değer kullanıldı` : ""}${isDorm() ? ". Yurt enerjisi öğrenci başına tahmini paydır" : ""}. Türkiye ortalaması sanayi dahil tüm sektörleri içerir, kişisel hesap genelde daha düşük çıkar.</p>
+    <h3>Biliyor muydun?</h3>
+    <ul class="list facts">${FACTS.map((f, k) => `<li style="animation-delay:${1100 + k * 100}ms"><span class="li">${ic(f[0])}</span><p>${f[1]}</p></li>`).join("")}</ul>
+    <details class="data"><summary>Fiyatlar, katsayılar ve kaynaklar</summary><div class="tbl"><table><thead><tr><th>Kalem</th><th>Değer</th><th>Kaynak</th></tr></thead><tbody>${dataRows()}</tbody></table></div>
+    <p class="note">Yöntem: TL ÷ birim fiyat = miktar; miktar × emisyon katsayısı = kg CO₂. Su ayak izi = evde doğrudan kullanım + sanal su (yiyecek, kıyafet, pet şişe üretimi). Sonuçlar farkındalık amaçlı yaklaşık değerlerdir. Son güncelleme: ${DATA.updated}.</p></details>`);
+  actions.innerHTML = `<div class="row2"><button class="btn primary" id="copy" type="button">${ic("copy")}Sonucu kopyala</button><button class="btn ghost" id="again" type="button" aria-label="Baştan başla">${ic("redo")}</button></div>`;
+  sfx.win();
+  setTimeout(() => {
+    countUp(el.querySelector("#vc"), r.totalCo2, 1); countUp(el.querySelector("#vw"), r.totalW, 0);
+    el.querySelectorAll("[data-w]").forEach(x => x.style.width = x.dataset.w + "%");
+    burstAt(el.querySelector(".medal"), 60);
+  }, 300);
+  actions.querySelector("#again").onclick = () => { for (const k in A) delete A[k]; sfx.back(); intro(); };
+  actions.querySelector("#copy").onclick = () => {
+    const txt = `Doğa ile Dönüş ayak izim (${p.n}):\n• Karbon: ${fmt(r.totalCo2, 1)} ton CO₂/yıl (Türkiye ort. ${fmt(DATA.avg.co2.v, 1)})\n• Su: ${fmt(r.totalW)} L/gün (dünya ort. ${fmt(DATA.avg.water.v)})\nHedeflerim:\n${t.map(x => "- " + x.t).join("\n")}`;
+    const fail = () => { const n = document.createElement("p"); n.className = "note"; n.style.whiteSpace = "pre-line"; n.textContent = txt; el.appendChild(n); n.scrollIntoView({ behavior: "smooth" }); toast("Metni seçip kopyalayabilirsin"); };
+    try { navigator.clipboard.writeText(txt).then(() => { sfx.pick(); toast("Kopyalandı, gruba yapıştırabilirsin"); }, fail); } catch (e) { fail(); }
+  };
+}
+function dataRows() {
+  const rows = [], f = o => typeof o.v === "object" && !Array.isArray(o.v) ? Object.values(o.v).map(x => fmt(x)).join(" / ") : Array.isArray(o.v) ? o.v.map(x => fmt(x[1], 2)).join(" / ") : fmt(o.v, o.v < 10 ? 2 : 0);
+  const names = { elec: "Elektrik", gas: "Doğalgaz", benzin: "Benzin", motorin: "Motorin", lpg: "LPG", waterTiers: "Su (İSKİ kademeleri)", transit: "Toplu taşıma", flyDom: "Yurt içi uçuş", flyInt: "Yurt dışı uçuş", clothes: "Kıyafet", bottle: "Pet şişe", diet: "Beslenme", homeElec: "Ev elektriği (tahmin)", homeGas: "Ev doğalgazı (tahmin)", dormElec: "Yurt elektriği", dormGas: "Yurt ısınması", heater: "Odada ısıtıcı", shower: "Duş", toilet: "Tuvalet", tapOpen: "Açık musluk", kitchen: "Mutfak", co2: "Türkiye ortalaması", water: "Su ortalaması" };
+  for (const grp of ["price", "co2", "estimate", "water", "avg"]) for (const [k, o] of Object.entries(DATA[grp])) rows.push(`<tr><td>${names[k] || k}</td><td class="n">${f(o)} ${o.unit}</td><td>${o.src}</td></tr>`);
+  return rows.join("");
+}
+
+addEventListener("keydown", e => { if (e.key === "Escape" && !backBtn.hidden) backBtn.click(); });
+intro();
+</script>
+</body>
+</html>
