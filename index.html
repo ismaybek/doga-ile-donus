@@ -4,226 +4,183 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Doğa ile Dönüş: su ve karbon ayak izini hesapla, rozetini kazan.">
-<meta name="theme-color" content="#4b7a22">
+<meta name="theme-color" content="#9fd3ea">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234b7a22'/%3E%3Cpath d='M12 4C9.5 7.3 7.5 9.7 7.5 12.3a4.5 4.5 0 0 0 9 0C16.5 9.7 14.5 7.3 12 4Z' fill='%23fff'/%3E%3C/svg%3E">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Doğa ile Dönüş Ayak İzi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979..2050&family=Familjen+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: a single app shell (top bar / scrolling screen / fixed action bar).
-   Phone: fills the screen. Desktop: the same shell centered like a device over a quiet landscape. */
+/* Layout: a poster-like app. Each screen = a solid colour band (category) holding the question,
+   over a paper sheet holding the answers. Wordmark and big numbers use Climate Crisis,
+   whose YEAR axis melts the letters the way Arctic sea ice shrinks from 1979 to 2050. */
 :root {
-  --ground: #dfe9e5;
-  --surface: #f7faf8;
-  --panel: #ffffff;
-  --ink: #12302b;
-  --muted: #5d756f;
-  --line: #dbe6e2;
-  --water: #1f6fae;   --water-soft: #e1eef8;
-  --energy: #b9741a;  --energy-soft: #f8ecd9;
-  --move: #5b5fc7;    --move-soft: #e8e8f9;
-  --food: #4b7a22;    --food-soft: #e5f0d9;
-  --home: #c4562c;    --home-soft: #f8e4da;
-  --hill1: #c9ddd5; --hill2: #b7d1c6;
-  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --ink: #10261f;        /* text and outlines on colour bands, both themes */
+  --paper: #f3f6f1;
+  --sheet: #ffffff;
+  --text: #10261f;
+  --muted: #4f665e;
+  --rule: #10261f;
+  --soft-rule: #d5e0da;
+  --glacier: #9fd3ea;
+  --sun: #f4c54f;
+  --dusk: #bdb6f2;
+  --moss: #a8d58b;
+  --clay: #f2a585;
+  --water: #1f6fae; --food: #3f7a2a; --home: #c4562c;
+  --page: #10261f;
+  --wordmark: "Climate Crisis", "Arial Black", Impact, sans-serif;
+  --display: "Familjen Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ground: #08110f; --surface: #101c19; --panel: #172622; --ink: #e4efeb; --muted: #93aba4; --line: #243731;
-    --water: #72b6ea; --water-soft: #15304a; --energy: #e7aa55; --energy-soft: #3a2b14; --move: #a3a6f5; --move-soft: #26284a;
-    --food: #9ccb6b; --food-soft: #20331a; --home: #f0956c; --home-soft: #3c2219; --hill1: #13221e; --hill2: #182b26;
+    --paper: #0f1c18; --sheet: #172822; --text: #e6efe9; --muted: #9db3aa; --rule: #e6efe9; --soft-rule: #2a3e37;
+    --water: #7cbbea; --food: #9ccb6b; --home: #f0956c; --page: #050c0a;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --ground: #08110f; --surface: #101c19; --panel: #172622; --ink: #e4efeb; --muted: #93aba4; --line: #243731;
-  --water: #72b6ea; --water-soft: #15304a; --energy: #e7aa55; --energy-soft: #3a2b14; --move: #a3a6f5; --move-soft: #26284a;
-  --food: #9ccb6b; --food-soft: #20331a; --home: #f0956c; --home-soft: #3c2219; --hill1: #13221e; --hill2: #182b26;
+  --paper: #0f1c18; --sheet: #172822; --text: #e6efe9; --muted: #9db3aa; --rule: #e6efe9; --soft-rule: #2a3e37;
+  --water: #7cbbea; --food: #9ccb6b; --home: #f0956c; --page: #050c0a;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; overflow: hidden; display: grid; place-items: center; }
-.backdrop { position: fixed; inset: auto 0 0 0; height: 45vh; pointer-events: none; }
-.backdrop svg { width: 100%; height: 100%; display: block; }
+body { margin: 0; background: var(--page); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.5; overflow: hidden; display: grid; place-items: center; }
 
-.app { --cat: var(--food); --cat-soft: var(--food-soft); position: relative; width: 100%; height: 100%; background: var(--surface); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; transition: --cat .3s; }
+.app { --cat: var(--glacier); position: relative; width: 100%; height: 100%; background: var(--paper); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; }
 @media (min-width: 560px) {
-  .app { width: 430px; height: min(880px, calc(100% - 48px)); border-radius: 34px; border: 1px solid var(--line); box-shadow: 0 40px 80px -40px rgba(10, 40, 34, .45), 0 0 0 8px color-mix(in srgb, var(--surface) 55%, transparent); }
+  body { background: var(--cat-page, var(--page)); }
+  .app { width: 420px; height: min(860px, calc(100% - 48px)); border-radius: 28px; border: 2px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); }
 }
-.app[data-cat="water"] { --cat: var(--water); --cat-soft: var(--water-soft); }
-.app[data-cat="energy"] { --cat: var(--energy); --cat-soft: var(--energy-soft); }
-.app[data-cat="move"] { --cat: var(--move); --cat-soft: var(--move-soft); }
-.app[data-cat="food"] { --cat: var(--food); --cat-soft: var(--food-soft); }
-.app[data-cat="home"] { --cat: var(--home); --cat-soft: var(--home-soft); }
-
+.app[data-cat="water"] { --cat: var(--glacier); }
+.app[data-cat="energy"] { --cat: var(--sun); }
+.app[data-cat="move"] { --cat: var(--dusk); }
+.app[data-cat="food"] { --cat: var(--moss); }
+.app[data-cat="home"] { --cat: var(--clay); }
 .i { width: 22px; height: 22px; flex: none; }
-/* top bar */
-.bar { display: grid; gap: 12px; padding: 14px 18px 12px; background: var(--surface); position: relative; z-index: 2; }
-.bar-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
-.brand { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
-.logo { width: 38px; height: 38px; flex: none; border-radius: 12px; background: linear-gradient(140deg, var(--water), var(--food)); display: grid; place-items: center; }
-.logo svg { width: 22px; height: 22px; }
-.wordmark { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: -.02em; white-space: nowrap; }
-.wordmark b { color: var(--water); font-weight: 800; } .wordmark em { color: var(--food); font-style: normal; }
-.icon-btn { flex: none; width: 42px; height: 42px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: transform .12s, background .2s; }
-.icon-btn:active { transform: scale(.92); }
-.icon-btn[hidden] { display: none !important; }
-.meta { display: flex; align-items: center; gap: 10px; }
-.meta[hidden] { display: none !important; }
-.cat-chip { display: inline-flex; align-items: center; gap: 6px; font: 700 12px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--cat); background: var(--cat-soft); border-radius: 999px; padding: 5px 10px 5px 8px; transition: color .3s, background .3s; }
-.cat-chip .i { width: 16px; height: 16px; }
-.track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
-.track div { height: 100%; width: 0; background: var(--cat); border-radius: 99px; transition: width .5s cubic-bezier(.3,1.3,.5,1), background .3s; }
-.count { font: 500 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 
-/* screen */
+/* colour band */
+.band { position: relative; background: var(--cat); color: var(--ink); padding: 14px 18px 0; display: grid; gap: 14px; transition: background .45s ease; z-index: 2; border-bottom: 2px solid var(--ink); }
+.toprow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.wm { flex: 1; min-width: 0; font-family: var(--wordmark); font-variation-settings: "YEAR" 1979; font-size: 17px; line-height: 1; letter-spacing: .01em; white-space: nowrap; }
+.sq { flex: none; width: 40px; height: 40px; border-radius: 12px; border: 2px solid var(--ink); background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: transform .1s, background .2s; }
+.sq:hover { background: rgba(255,255,255,.35); }
+.sq:active { transform: translateY(2px); }
+.sq[hidden] { display: none !important; }
+.sq .i { width: 20px; height: 20px; }
+.segs { display: flex; gap: 4px; }
+.segs[hidden] { display: none !important; }
+.segs i { flex: 1; height: 5px; border-radius: 3px; background: rgba(16, 38, 31, .18); transition: background .3s; }
+.segs i.on { background: var(--ink); }
+.kicker { display: flex; align-items: baseline; gap: 10px; font: 700 13px var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.kicker .no { font-family: var(--wordmark); font-variation-settings: "YEAR" 1979; font-size: 15px; letter-spacing: 0; }
+.qtitle { font: 700 27px/1.15 var(--display); letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+.qsub { margin: -6px 0 0; font-size: 15px; opacity: .78; }
+.scene { display: block; width: calc(100% + 36px); margin: 0 -18px; height: 64px; }
+.band-body { display: grid; gap: 12px; }
+.band-body.in { animation: bandIn .45s cubic-bezier(.2,1.1,.3,1) both; }
+@keyframes bandIn { from { opacity: 0; transform: translateY(10px); } }
+
+/* paper sheet */
 .screen { position: relative; overflow: hidden auto; overscroll-behavior: contain; }
-.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; pointer-events: none; opacity: .5; }
-.hills path { transition: fill .4s; }
-.page { position: relative; z-index: 1; padding: 6px 20px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-content: start; min-height: 100%; }
-.page.in { animation: pageIn .42s cubic-bezier(.2,1.1,.3,1) both; }
-.page.in.back { animation-name: pageInBack; }
-.page.out { position: absolute; inset: 0 0 auto 0; animation: pageOut .22s ease-in both; pointer-events: none; }
-.page.out.back { animation-name: pageOutBack; }
-@keyframes pageIn { from { opacity: 0; transform: translateX(36px); } }
-@keyframes pageInBack { from { opacity: 0; transform: translateX(-36px); } }
-@keyframes pageOut { to { opacity: 0; transform: translateX(-36px); } }
-@keyframes pageOutBack { to { opacity: 0; transform: translateX(36px); } }
-.q-ic { width: 56px; height: 56px; border-radius: 18px; background: var(--cat-soft); color: var(--cat); display: grid; place-items: center; animation: pop .5s cubic-bezier(.2,1.5,.4,1) both; }
-.q-ic .i { width: 28px; height: 28px; }
-h1, h2 { font-family: var(--display); font-weight: 800; margin: 0; line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
-h1 { font-size: 34px; }
-h2 { font-size: 27px; }
-h3 { font: 700 13px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 6px 0 -6px; }
-.sub { color: var(--muted); margin: -8px 0 0; font-size: 15px; }
-@keyframes pop { from { opacity: 0; transform: scale(.85) translateY(8px); } }
+.page { position: relative; padding: 20px 18px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-content: start; }
+.page.in { animation: pageIn .4s cubic-bezier(.2,1.1,.3,1) both; }
+.page.out { position: absolute; inset: 0 0 auto 0; animation: pageOut .2s ease-in both; pointer-events: none; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(18px); } }
+@keyframes pageOut { to { opacity: 0; transform: translateY(-10px); } }
 
-/* options */
-.opts { display: grid; gap: 10px; }
-.opt { display: grid; grid-template-columns: 46px minmax(0, 1fr) 24px; align-items: center; gap: 14px; width: 100%; text-align: left; font: 600 16px var(--body); color: var(--ink); background: var(--panel); border: 1.5px solid var(--line); border-radius: 18px; padding: 12px 14px 12px 12px; cursor: pointer; animation: rise .45s cubic-bezier(.2,1.1,.3,1) both; transition: border-color .15s, transform .12s, background .2s; }
-.opt:hover { border-color: color-mix(in srgb, var(--cat) 40%, var(--line)); }
-.opt:active { transform: scale(.98); }
-.opt .oi { width: 46px; height: 46px; border-radius: 14px; background: var(--cat-soft); color: var(--cat); display: grid; place-items: center; font: 800 18px var(--display); }
-.opt small { display: block; font-weight: 500; font-size: 13px; color: var(--muted); margin-top: 1px; }
-.opt .radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: var(--panel); transition: all .2s; }
-.opt .radio .i { width: 14px; height: 14px; stroke-width: 3; }
-.opt.sel { border-color: var(--cat); background: color-mix(in srgb, var(--cat-soft) 60%, var(--panel)); }
-.opt.sel .radio { background: var(--cat); border-color: var(--cat); animation: tick .35s cubic-bezier(.2,1.6,.4,1); }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
-@keyframes tick { from { transform: scale(.4); } }
+.opt { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; text-align: left; font: 600 17px var(--display); color: var(--text); background: var(--sheet); border: 2px solid var(--rule); border-radius: 14px; padding: 14px 16px; cursor: pointer; box-shadow: 0 4px 0 var(--rule); transition: transform .08s, box-shadow .08s, background .2s; animation: rise .4s cubic-bezier(.2,1.1,.3,1) both; }
+.opt:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--rule); }
+.opt .oi { display: grid; place-items: center; font: 400 15px var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.opt small { display: block; font: 500 13px var(--body); color: var(--muted); margin-top: 1px; }
+.opt .key { font: 500 12px var(--mono); color: var(--muted); }
+.opt.sel { background: var(--cat); color: var(--ink); }
+.opt.sel small, .opt.sel .key { color: var(--ink); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 
-/* number */
-.numbox { background: var(--panel); border: 1.5px solid var(--line); border-radius: 22px; padding: 22px 18px 18px; display: grid; gap: 14px; }
+.numbox { background: var(--sheet); border: 2px solid var(--rule); border-radius: 18px; padding: 22px 16px 18px; display: grid; gap: 14px; box-shadow: 0 4px 0 var(--rule); }
 .num { display: flex; align-items: center; justify-content: center; gap: 18px; }
-.num button { width: 54px; height: 54px; border-radius: 16px; border: 0; background: var(--cat-soft); color: var(--cat); cursor: pointer; display: grid; place-items: center; transition: transform .1s; }
-.num button:active { transform: scale(.9); }
-.num output { font: 800 60px var(--display); min-width: 2.2ch; text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
-.num output.bump { animation: bump .25s ease; }
-@keyframes bump { 50% { transform: scale(1.15); } }
-.num-unit { text-align: center; color: var(--muted); font-weight: 600; margin-top: -6px; }
-input[type=range] { width: 100%; accent-color: var(--cat); }
+.num button { width: 52px; height: 52px; border-radius: 14px; border: 2px solid var(--rule); background: var(--sheet); color: var(--text); cursor: pointer; display: grid; place-items: center; box-shadow: 0 3px 0 var(--rule); transition: transform .08s, box-shadow .08s; }
+.num button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--rule); }
+.num output { font: 400 64px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+.num output.bump { animation: bump .22s ease; }
+@keyframes bump { 50% { transform: scale(1.12); } }
+.num-unit { text-align: center; color: var(--muted); font: 600 15px var(--display); margin-top: -6px; }
+input[type=range] { width: 100%; accent-color: var(--text); }
 
-/* bill */
-.billbox { background: var(--panel); border: 1.5px solid var(--line); border-radius: 22px; padding: 16px; display: grid; gap: 12px;  grid-template-columns: minmax(0, 1fr); }
-.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
-.seg button { font: 700 14px var(--body); border: 0; background: transparent; color: var(--muted); padding: 9px; border-radius: 9px; cursor: pointer; transition: all .2s; }
-.seg button[aria-pressed=true] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
-.field { display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--cat); padding: 4px 2px 6px; }
-.field input { flex: 1; min-width: 0; width: 100%; font: 800 40px var(--display); border: 0; background: transparent; color: var(--ink); padding: 0; font-variant-numeric: tabular-nums; }
+.billbox { background: var(--sheet); border: 2px solid var(--rule); border-radius: 18px; padding: 14px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; box-shadow: 0 4px 0 var(--rule); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.seg button { font: 700 14px var(--display); border: 0; background: transparent; color: var(--text); padding: 9px; cursor: pointer; }
+.seg button + button { border-left: 2px solid var(--rule); }
+.seg button[aria-pressed=true] { background: var(--text); color: var(--sheet); }
+.field { display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--rule); padding: 2px 2px 6px; }
+.field input { flex: 1; min-width: 0; width: 100%; font: 400 40px var(--wordmark); font-variation-settings: "YEAR" 1979; border: 0; background: transparent; color: var(--text); padding: 0; }
 .field input:focus { outline: none; }
-.field span { font: 700 16px var(--body); color: var(--muted); }
-.conv { display: flex; align-items: center; gap: 6px; font: 500 14px var(--mono); color: var(--cat); min-height: 1.5em; }
+.field span { font: 700 16px var(--display); color: var(--muted); }
+.conv { display: flex; align-items: center; gap: 6px; font: 500 14px var(--mono); color: var(--muted); min-height: 1.5em; }
 .conv .i { width: 16px; height: 16px; }
 
 /* action bar */
-.actionbar { position: relative; z-index: 2; padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.actionbar { padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--paper); border-top: 2px solid var(--rule); display: grid; gap: 8px; }
 .alt { display: flex; gap: 8px; }
-.alt:empty { display: none; }
-.btn { font: 700 16px var(--body); border: 0; border-radius: 16px; padding: 15px 18px; background: var(--ink); color: var(--surface); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform .12s, opacity .2s, background .3s; width: 100%; }
-.btn:active { transform: scale(.97); }
-.btn.primary { background: var(--cat); color: var(--panel); }
-:root:not([data-theme="light"]) .btn.primary { color: var(--surface); }
-.btn.ghost { background: var(--panel); color: var(--ink); border: 1.5px solid var(--line); padding: 11px 14px; font-size: 14px; }
-.btn[disabled] { opacity: .35; cursor: default; }
+.btn { font: 700 17px var(--display); border: 2px solid var(--rule); border-radius: 14px; padding: 14px 18px; background: var(--text); color: var(--paper); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; box-shadow: 0 4px 0 color-mix(in srgb, var(--rule) 55%, transparent); transition: transform .08s, box-shadow .08s; }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--rule); }
+.btn.ghost { background: var(--sheet); color: var(--text); padding: 10px 12px; font-size: 15px; box-shadow: none; }
 .btn .i { width: 20px; height: 20px; }
-.hint { text-align: center; font-size: 13px; color: var(--muted); }
+.hint { text-align: center; font: 500 13px var(--body); color: var(--muted); }
 button:focus-visible, input:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
 
 /* intro */
-.hero { position: relative; border-radius: 26px; background: linear-gradient(160deg, var(--water-soft), var(--food-soft)); display: grid; place-items: center; padding: 18px 0 10px; overflow: hidden; }
-.globe { width: 190px; height: auto; overflow: visible; animation: float 5s ease-in-out infinite; }
-.globe .waves { animation: wave 6s linear infinite; }
-.globe .orbit { transform-origin: 100px 100px; animation: spin 14s linear infinite; }
-.globe .orbit.r { animation-direction: reverse; animation-duration: 18s; }
-@keyframes float { 50% { transform: translateY(-7px); } }
-@keyframes wave { to { transform: translateX(-80px); } }
-@keyframes spin { to { transform: rotate(360deg); } }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px; display: grid; gap: 4px; justify-items: start; animation: rise .5s both; }
-.stat .i { width: 18px; height: 18px; color: var(--water); }
-.stat:nth-child(2) .i { color: var(--food); } .stat:nth-child(3) .i { color: var(--home); }
-.stat b { font: 800 18px var(--display); line-height: 1; } .stat span { font-size: 12px; color: var(--muted); }
-.steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; }
-.steps li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; animation: rise .5s both; }
-.steps li + li { border-top: 1px solid var(--line); }
-.steps .si { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; }
-.steps li:nth-child(1) .si { background: var(--home-soft); color: var(--home); }
-.steps li:nth-child(2) .si { background: var(--water-soft); color: var(--water); }
-.steps li:nth-child(3) .si { background: var(--food-soft); color: var(--food); }
-.steps b { display: block; font-size: 15px; } .steps span { font-size: 13px; color: var(--muted); }
-.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.bdg { display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.2; animation: rise .5s both; }
-.bdg .bi { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; border: 2px dashed var(--line); color: var(--muted); }
-.bdg.on .bi { border-style: solid; }
+.melt { font-family: var(--wordmark); font-size: clamp(54px, 17vw, 74px); line-height: .92; margin: 6px 0 0; font-variation-settings: "YEAR" 1979; transition: font-variation-settings 3.2s cubic-bezier(.5,0,.3,1); letter-spacing: -.01em; }
+.melt.go { font-variation-settings: "YEAR" 2025; }
+.yearline { display: flex; align-items: center; gap: 8px; font: 500 12px var(--mono); }
+.yearline .bar { flex: 1; height: 2px; background: var(--ink); position: relative; }
+.yearline .dot { position: absolute; top: -4px; left: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); transition: left 3.2s cubic-bezier(.5,0,.3,1); }
+.melt.go + .yearline .dot { left: calc(65.7% - 5px); }
+.lede { font: 600 21px/1.3 var(--display); margin: 0; text-wrap: balance; }
+.cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.cats span { display: inline-flex; align-items: center; gap: 6px; font: 600 14px var(--display); border: 2px solid var(--rule); border-radius: 99px; padding: 4px 12px 4px 6px; background: var(--sheet); animation: rise .4s both; }
+.cats b { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink); }
+.small { font-size: 13px; color: var(--muted); margin: 0; }
 
 /* result */
-.res-hero { border-radius: 26px; padding: 20px; background: linear-gradient(160deg, var(--water-soft), var(--food-soft)); display: grid; justify-items: center; gap: 8px; text-align: center; }
-.medal { width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center; background: var(--panel); color: var(--food); box-shadow: 0 0 0 6px color-mix(in srgb, var(--panel) 50%, transparent); animation: medal .8s .2s cubic-bezier(.2,1.6,.4,1) both; }
-.medal .i { width: 42px; height: 42px; }
-@keyframes medal { from { opacity: 0; transform: scale(.3) rotate(-40deg); } }
-.res-hero small { font: 700 12px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.res-hero h2 { font-size: 28px; }
-.meters { display: grid; gap: 10px; }
-.meter { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: grid; gap: 8px; }
-.mh { display: flex; align-items: center; gap: 10px; }
-.mh .mi { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; }
-.meter.c .mi { background: var(--food-soft); color: var(--food); } .meter.w .mi { background: var(--water-soft); color: var(--water); }
-.mh span { font-weight: 700; font-size: 14px; }
-.val { font: 800 44px var(--display); line-height: 1; font-variant-numeric: tabular-nums; }
-.meter.c .val { color: var(--food); } .meter.w .val { color: var(--water); }
-.val small { font: 600 14px var(--body); color: var(--muted); margin-left: 6px; }
-.ref { position: relative; height: 10px; background: var(--surface); border-radius: 99px; }
-.ref .me { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 99px; transition: width 1.2s cubic-bezier(.2,1,.3,1); }
-.meter.c .me { background: var(--food); } .meter.w .me { background: var(--water); }
-.ref .avg { position: absolute; top: -5px; bottom: -5px; width: 3px; background: var(--ink); border-radius: 2px; }
-.cmp { font-size: 13px; color: var(--muted); } .cmp b { color: var(--ink); }
-.list { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; margin: 0; padding: 0; list-style: none; }
-.list > li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; align-items: start; padding: 14px; animation: rise .5s both; }
-.list > li + li { border-top: 1px solid var(--line); }
-.list .li { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font: 800 17px var(--display); }
-.tips .li { background: var(--home-soft); color: var(--home); }
-.facts .li { background: var(--water-soft); color: var(--water); }
-.list b { display: block; font-size: 15px; line-height: 1.35; } .list span, .list p { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
-.bars { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: grid; gap: 9px; }
+.big { font-family: var(--wordmark); font-size: clamp(72px, 24vw, 104px); line-height: .9; font-variation-settings: "YEAR" 1979; transition: font-variation-settings 2.6s cubic-bezier(.5,0,.3,1); font-variant-numeric: tabular-nums; }
+.bigunit { font: 700 16px var(--display); margin-top: -4px; }
+.stamp { justify-self: start; display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--display); text-transform: uppercase; letter-spacing: .06em; border: 2px solid var(--ink); border-radius: 10px; padding: 6px 12px; background: rgba(255,255,255,.4); animation: stamp .5s 1.2s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes stamp { from { opacity: 0; transform: scale(1.6) rotate(-8deg); } }
+.card { background: var(--sheet); border: 2px solid var(--rule); border-radius: 16px; padding: 14px 16px; display: grid; gap: 8px; }
+.card .lab { font: 700 12px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.wnum { font: 400 44px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.wnum small { font: 700 15px var(--display); margin-left: 6px; color: var(--muted); }
+.ref { position: relative; height: 12px; border: 2px solid var(--rule); border-radius: 99px; }
+.ref .me { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 99px; background: var(--text); transition: width 1.2s cubic-bezier(.2,1,.3,1); }
+.ref .avg { position: absolute; top: -7px; bottom: -7px; width: 3px; background: var(--home); }
+.cmp { font-size: 13px; color: var(--muted); } .cmp b { color: var(--text); }
+h3 { font: 700 13px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 10px 0 -2px; }
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; border: 2px solid var(--rule); border-radius: 16px; background: var(--sheet); overflow: hidden; }
+.list > li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; padding: 13px 14px; animation: rise .45s both; }
+.list > li + li { border-top: 2px solid var(--soft-rule); }
+.list .n { font: 400 20px/1.2 var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.list .i { width: 22px; height: 22px; margin-top: 1px; }
+.list b { display: block; font: 700 16px/1.3 var(--display); } .list span, .list p { font-size: 14px; color: var(--muted); margin: 2px 0 0; }
+.bars { display: grid; gap: 9px; }
 .br { display: grid; grid-template-columns: 92px minmax(0, 1fr) 58px; gap: 8px; align-items: center; font-size: 13px; }
-.br .t { height: 8px; background: var(--surface); border-radius: 99px; overflow: hidden; }
-.br .f { height: 100%; width: 0; border-radius: 99px; transition: width 1s cubic-bezier(.2,1,.3,1); }
-.br.c .f { background: var(--food); } .br.w .f { background: var(--water); }
+.br .t { height: 10px; border: 1.5px solid var(--rule); border-radius: 99px; overflow: hidden; }
+.br .f { height: 100%; width: 0; background: var(--text); transition: width 1s cubic-bezier(.2,1,.3,1); }
 .br .v { text-align: right; font: 500 12px var(--mono); }
 .note { font-size: 12px; color: var(--muted); margin: 0; }
-details.data { font-size: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
-details.data summary { cursor: pointer; font-weight: 700; }
+details.data { font-size: 13px; }
+details.data summary { cursor: pointer; font: 700 14px var(--display); }
 .tbl { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 8px; }
-th, td { text-align: left; padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th, td { text-align: left; padding: 6px; border-bottom: 1px solid var(--soft-rule); vertical-align: top; }
 td.n { font-family: var(--mono); white-space: nowrap; }
 .row2 { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .row2 .btn.ghost { width: auto; padding: 0 16px; }
-.toast { position: absolute; left: 50%; bottom: 96px; transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: var(--surface); font: 600 14px var(--body); padding: 10px 16px; border-radius: 12px; transition: all .3s; pointer-events: none; z-index: 5; white-space: nowrap; }
+.toast { position: absolute; left: 50%; bottom: 96px; transform: translate(-50%, 20px); opacity: 0; background: var(--text); color: var(--paper); font: 600 14px var(--display); padding: 10px 16px; border-radius: 12px; transition: all .3s; pointer-events: none; z-index: 5; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -231,30 +188,19 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
 </head>
 <body>
 
-<div class="backdrop" aria-hidden="true">
-  <svg viewBox="0 0 1440 400" preserveAspectRatio="none"><path d="M0 260 C240 170 420 300 720 220 S1200 150 1440 230 V400 H0Z" fill="var(--hill1)"/><path d="M0 320 C300 250 520 360 860 300 S1260 260 1440 310 V400 H0Z" fill="var(--hill2)"/></svg>
-</div>
 <canvas id="fx" aria-hidden="true"></canvas>
-
-<main class="app" id="app" data-cat="food">
-  <header class="bar">
-    <div class="bar-row">
-      <button class="icon-btn" id="backBtn" type="button" aria-label="Geri" hidden></button>
-      <span class="brand">
-        <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5C8.5 7 6 10.2 6 13.6a6 6 0 0 0 12 0C18 10.2 15.5 7 12 2.5Z" fill="#fff" fill-opacity=".95"/><path d="M12 19.5v-6.2m0 0c0-2 1.4-3.3 3.2-3.6M12 13.3c-.3-1.6-1.4-2.6-2.9-2.9" stroke="#3d7a2a" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <span class="wordmark"><b>Doğa</b> ile <em>Dönüş</em></span>
-      </span>
-      <button class="icon-btn" id="soundBtn" type="button" aria-label="Sesi kapat"></button>
+<main class="app" id="app" data-cat="water">
+  <header class="band" id="band">
+    <div class="toprow">
+      <button class="sq" id="backBtn" type="button" aria-label="Geri" hidden></button>
+      <span class="wm">Doğa ile Dönüş</span>
+      <button class="sq" id="soundBtn" type="button" aria-label="Sesi kapat"></button>
     </div>
-    <div class="meta" id="meta" hidden>
-      <span class="cat-chip" id="catChip"></span>
-      <div class="track" aria-hidden="true"><div id="prog"></div></div>
-      <span class="count" id="count"></span>
-    </div>
+    <div class="segs" id="segs" hidden></div>
+    <div class="band-body" id="bandBody"></div>
+    <svg class="scene" id="scene" viewBox="0 0 420 64" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
   </header>
-  <section class="screen" id="screen">
-    <svg class="hills" viewBox="0 0 430 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C80 40 150 90 230 62 S360 40 430 66 V120 H0Z" fill="var(--cat-soft)"/><path d="M0 96 C90 76 170 112 270 92 S380 84 430 98 V120 H0Z" fill="var(--cat-soft)"/></svg>
-  </section>
+  <section class="screen" id="screen"></section>
   <footer class="actionbar" id="actions"></footer>
   <div class="toast" id="toast" role="status"></div>
 </main>
@@ -307,7 +253,7 @@ const DATA = {
   }
 };
 
-// ===== Ses: Web Audio ile üretilir, dosya yok =====
+// ===== Ses: doğal tınılar Web Audio ile üretilir (tel/kalimba tıngırtısı, damla, rüzgar, kuş), dosya yok =====
 let actx = null, muted = false;
 try { muted = localStorage.getItem("ai_muted") === "1"; } catch (e) {}
 function audio() {
@@ -315,33 +261,61 @@ function audio() {
   try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); } catch (e) { return null; }
   return actx;
 }
-function tone(f, dur = .12, type = "sine", vol = .12, delay = 0, slide = 0) {
+const plucks = {};
+// Karplus-Strong: kısa bir gürültü patlaması tekrar tekrar süzülünce tel gibi titreşir
+function pluckBuf(c, f) {
+  const key = Math.round(f);
+  if (plucks[key]) return plucks[key];
+  const sr = c.sampleRate, len = Math.floor(sr * 1.4), N = Math.max(2, Math.round(sr / f));
+  const buf = c.createBuffer(1, len, sr), d = buf.getChannelData(0);
+  let prev = 0;
+  for (let i = 0; i < N; i++) { const r = Math.random() * 2 - 1; d[i] = (r + prev) / 2; prev = d[i]; }
+  for (let i = N; i < len; i++) d[i] = .996 * .5 * (d[i - N] + d[i - N - 1 < 0 ? 0 : i - N - 1]);
+  return plucks[key] = buf;
+}
+function pluck(f, vol = .22, delay = 0) {
   const c = audio(); if (!c) return;
-  const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t);
-  if (slide) o.frequency.exponentialRampToValueAtTime(f * slide, t + dur);
-  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  const s = c.createBufferSource(), g = c.createGain(), lp = c.createBiquadFilter(), t = c.currentTime + delay;
+  s.buffer = pluckBuf(c, f); lp.type = "lowpass"; lp.frequency.value = 3200;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + 1.3);
+  s.connect(lp).connect(g).connect(c.destination); s.start(t); s.stop(t + 1.4);
+}
+function drop(pitch = 1, vol = .14) {
+  const c = audio(); if (!c) return;
+  const o = c.createOscillator(), g = c.createGain(), t = c.currentTime;
+  o.type = "sine"; o.frequency.setValueAtTime(1500 * pitch, t); o.frequency.exponentialRampToValueAtTime(320 * pitch, t + .11);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + .16);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t + .18);
+}
+let noiseBuf = null;
+function breeze(vol = .05, dur = .5) {
+  const c = audio(); if (!c) return;
+  if (!noiseBuf) { noiseBuf = c.createBuffer(1, c.sampleRate, c.sampleRate); const d = noiseBuf.getChannelData(0); let b = 0; for (let i = 0; i < d.length; i++) { b = .97 * b + .03 * (Math.random() * 2 - 1); d[i] = b * 6; } }
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime;
+  s.buffer = noiseBuf; f.type = "bandpass"; f.Q.value = .7;
+  f.frequency.setValueAtTime(350, t); f.frequency.exponentialRampToValueAtTime(1100, t + dur * .6); f.frequency.exponentialRampToValueAtTime(500, t + dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + dur * .35); g.gain.linearRampToValueAtTime(0, t + dur);
+  s.connect(f).connect(g).connect(c.destination); s.start(t); s.stop(t + dur);
+}
+function chirp(delay, f0, f1, dur = .09, vol = .045) {
+  const c = audio(); if (!c) return;
+  const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + delay;
+  o.type = "sine"; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
   o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
 }
-function whoosh() {
-  const c = audio(); if (!c) return;
-  const len = c.sampleRate * .25, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime;
-  s.buffer = buf; f.type = "bandpass"; f.Q.value = 1.2;
-  f.frequency.setValueAtTime(400, t); f.frequency.exponentialRampToValueAtTime(2400, t + .22);
-  g.gain.value = .09; s.connect(f).connect(g).connect(c.destination); s.start(t);
-}
+const bird = (d = 0) => { chirp(d, 3200, 4600); chirp(d + .12, 3400, 4900); chirp(d + .26, 4400, 2900, .16); };
+const SCALE = [392, 440, 523.25, 587.33, 659.25, 784, 880];
 const sfx = {
-  tap: () => tone(720, .08, "triangle", .1),
-  pick: () => { tone(660, .1, "sine", .12); tone(990, .14, "sine", .1, .06); },
-  up: () => tone(520, .06, "square", .04, 0, 1.3),
-  down: () => tone(420, .06, "square", .04, 0, .75),
-  next: whoosh,
-  back: () => tone(500, .12, "sine", .08, 0, .6),
-  drop: () => { tone(1200, .18, "sine", .1, 0, .4); tone(1600, .1, "sine", .06, .08, .5); },
-  win: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .35, "triangle", .1, i * .09)),
-  tick: () => tone(1800, .02, "square", .015)
+  tap: () => pluck(523.25, .16),
+  pick: k => pluck(SCALE[(k || 0) % SCALE.length], .24),
+  up: () => drop(1.1, .1),
+  down: () => drop(.8, .08),
+  drop: () => drop(1, .14),
+  next: () => breeze(),
+  back: () => pluck(293.66, .16),
+  start: () => { pluck(523.25, .2); pluck(784, .16, .1); bird(.25); },
+  win: () => { [392, 523.25, 659.25, 784, 1046.5].forEach((f, i) => pluck(f, .22, i * .12)); bird(.8); }
 };
 
 // ===== Efekt: yaprak ve damla patlaması =====
@@ -560,18 +534,36 @@ const FACTS = [
   ["wheat", "1 kg ekmeğin arkasında yaklaşık 1.600 litre su var."],
   ["tap", "Diş fırçalarken açık kalan musluk dakikada 3 litre kadar su harcar."]
 ];
+
 const PERSONAS = [
-  { max: 2.5, i: "trees", n: "Orman Bekçisi" },
-  { max: 4, i: "leaf", n: "Yeşil Yolcu" },
-  { max: 6, i: "sprout", n: "Dönüşüm Yolunda" },
-  { max: Infinity, i: "flame", n: "Isınma Turunda" }
+  { max: 2.5, i: "trees", n: "Orman Bekçisi", cat: "food" },
+  { max: 4, i: "leaf", n: "Yeşil Yolcu", cat: "water" },
+  { max: 6, i: "sprout", n: "Dönüşüm Yolunda", cat: "energy" },
+  { max: Infinity, i: "flame", n: "Isınma Turunda", cat: "home" }
 ];
 const persona = t => PERSONAS.find(p => t < p.max);
+const CAT_VAR = { water: "--glacier", energy: "--sun", move: "--dusk", food: "--moss", home: "--clay" };
+
+// ===== Sahneler: her kategorinin bandının altındaki çizgi manzara =====
+function waves(y, amp, step) { let d = `M-10 ${y}`; for (let x = -10; x < 440; x += step) d += ` q${step / 4} ${-amp} ${step / 2} 0 t${step / 2} 0`; return d; }
+const SCENES = {
+  water: () => `<path d="${waves(30, 6, 60)}"/><path d="${waves(44, 5, 48)}" opacity=".7"/><path d="${waves(57, 4, 40)}" opacity=".5"/><path d="M340 6c-5 7-8 11-8 15a8 8 0 0 0 16 0c0-4-3-8-8-15Z" fill="#fff" fill-opacity=".6"/>`,
+  energy: () => `<circle cx="352" cy="40" r="20" fill="#fff" fill-opacity=".5"/><path d="M352 10v-8M376 18l6-5M328 18l-6-5M386 38h8M310 38h8"/><path d="M20 64V20M10 26h20M12 34h16M20 20l60 18M80 64V30M70 34h20M72 42h16M80 30l60 16M140 64V40M132 44h16" /><path d="M0 63h420"/>`,
+  move: () => `<path d="M-10 44c60-22 110-18 170-2s120 14 180-6 60-10 90 0" /><path d="M-10 62c80-12 160-14 220-6s140 4 220-4" /><path d="M0 62h420" opacity=".0"/><path d="M60 54h22M120 50h22M180 50h22M240 52h22M300 52h22" stroke-dasharray="0"/><circle cx="350" cy="18" r="8" fill="#fff" fill-opacity=".5"/>`,
+  food: () => { let d = ""; for (let x = -40; x < 440; x += 26) d += `<path d="M${x} 64 L${x + 36} 30"/>`; return `${d}<path d="M0 30h420"/><path d="M330 30V6M330 12c6-2 8-6 8-10M330 18c6-2 8-6 8-10M330 12c-6-2-8-6-8-10M330 18c-6-2-8-6-8-10M372 30V12M372 16c5-2 7-5 7-8M372 16c-5-2-7-5-7-8"/>`; },
+  home: () => `<path d="M0 63h420"/><path d="M30 63V36l26-20 26 20v27M48 63V48h16v15"/><path d="M110 63V42l18-14 18 14v21"/><path d="M180 63V30h40v33M188 38h8M204 38h8M188 50h8M204 50h8"/><path d="M260 63V40l30-22 30 22v23M280 46h20v10h-20z"/><path d="M350 63V44c0-8 6-14 14-14s14 6 14 14v19" /><path d="M364 30V18"/>`,
+  ice: () => `<path d="M0 46h420"/><path d="M40 46l30-34 18 14 22-18 28 38z" fill="#fff" fill-opacity=".7"/><path d="M48 46l20 12h56l12-12" opacity=".6"/><path d="M250 46l20-18 14 8 16-12 20 22z" fill="#fff" fill-opacity=".55"/><path d="M${0} 56q20-4 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0" opacity=".6"/>`
+};
+function setCat(cat, scene) {
+  app.dataset.cat = cat;
+  document.body.style.setProperty("--cat-page", `var(${CAT_VAR[cat]})`);
+  sceneEl.innerHTML = `<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SCENES[scene || cat]()}</g>`;
+}
 
 // ===== Kabuk =====
 const app = document.getElementById("app"), screen = document.getElementById("screen"), actions = document.getElementById("actions");
+const bandBody = document.getElementById("bandBody"), sceneEl = document.getElementById("scene"), segs = document.getElementById("segs");
 const backBtn = document.getElementById("backBtn"), soundBtn = document.getElementById("soundBtn");
-const meta = document.getElementById("meta"), catChip = document.getElementById("catChip"), prog = document.getElementById("prog"), count = document.getElementById("count");
 backBtn.innerHTML = ic("left");
 function syncSound() { soundBtn.innerHTML = ic(muted ? "mute" : "vol"); soundBtn.setAttribute("aria-label", muted ? "Sesi aç" : "Sesi kapat"); }
 soundBtn.onclick = () => { muted = !muted; try { localStorage.setItem("ai_muted", muted ? "1" : "0"); } catch (e) {} syncSound(); sfx.tap(); };
@@ -580,70 +572,50 @@ function toast(msg) { const t = document.getElementById("toast"); t.textContent 
 
 let history = [], cur = -1;
 const visible = () => STEPS.filter(s => !s.when || s.when());
+const pad = n => String(n).padStart(2, "0");
 
-function swap(html, dir = 1) {
+function setBand(html) { bandBody.classList.remove("in"); void bandBody.offsetWidth; bandBody.innerHTML = html; bandBody.classList.add("in"); }
+function swap(html) {
   screen.querySelectorAll(".page.out").forEach(x => x.remove());
   const old = screen.querySelector(".page");
-  if (old) { old.classList.remove("in", "back"); old.classList.add("out"); if (dir < 0) old.classList.add("back"); setTimeout(() => old.remove(), 240); }
+  if (old) { old.classList.remove("in"); old.classList.add("out"); setTimeout(() => old.remove(), 220); }
   const el = document.createElement("div");
-  el.className = "page in" + (dir < 0 ? " back" : "");
-  el.innerHTML = html; screen.appendChild(el); screen.scrollTop = 0;
+  el.className = "page in"; el.innerHTML = html; screen.appendChild(el); screen.scrollTop = 0;
   return el;
 }
-function setBar(cat) {
-  const vis = visible();
-  if (cur === -1) { meta.hidden = true; backBtn.hidden = true; app.dataset.cat = "food"; return; }
-  meta.hidden = false; backBtn.hidden = false;
-  if (cur === "done") { app.dataset.cat = "food"; catChip.innerHTML = ic("award") + "Sonuç"; prog.style.width = "100%"; count.textContent = `${vis.length}/${vis.length}`; return; }
-  const c = CATS[cat], idx = vis.indexOf(STEPS[cur]) + 1;
-  app.dataset.cat = c.c; catChip.innerHTML = ic(c.i) + c.l;
-  prog.style.width = (idx / vis.length * 100) + "%"; count.textContent = `${idx}/${vis.length}`;
+function setSegs(idx, total) {
+  segs.hidden = false;
+  segs.innerHTML = Array.from({ length: total }, (_, k) => `<i class="${k < idx ? "on" : ""}"></i>`).join("");
 }
 
 function intro() {
-  cur = -1; history = []; setBar();
+  cur = -1; history = [];
+  backBtn.hidden = true; segs.hidden = true;
+  document.querySelector(".wm").style.visibility = "hidden";
+  setCat("water", "ice");
+  setBand(`
+    <div class="melt" id="melt">DOĞA<br>İLE<br>DÖNÜŞ</div>
+    <div class="yearline"><span>1979</span><span class="bar"><span class="dot"></span></span><span>2050</span></div>`);
+  setTimeout(() => document.getElementById("melt")?.classList.add("go"), 500);
   swap(`
-    <div class="hero" aria-hidden="true">
-      <svg class="globe" viewBox="0 0 200 200">
-        <defs><clipPath id="gc"><circle cx="100" cy="100" r="62"/></clipPath></defs>
-        <circle cx="100" cy="100" r="62" fill="var(--panel)"/>
-        <g clip-path="url(#gc)">
-          <path class="waves" d="M20 112 q20 -10 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V200 H20 Z" fill="var(--water)" opacity=".85"/>
-          <path d="M62 70 q14 -16 34 -8 q10 10 -2 20 q-14 4 -12 18 q-6 10 -18 2 q-10 -14 -2 -32 Z" fill="var(--food)"/>
-          <path d="M118 58 q18 2 22 18 q-8 8 -20 2 q-8 -8 -2 -20 Z" fill="var(--food)" opacity=".85"/>
-          <path d="M120 118 q16 -6 24 8 q-6 14 -22 10 q-8 -8 -2 -18 Z" fill="var(--food)" opacity=".9"/>
-        </g>
-        <circle cx="100" cy="100" r="62" fill="none" stroke="var(--ink)" stroke-opacity=".1" stroke-width="2"/>
-        <g class="orbit"><path d="M100 18 c-6 9 -10 14 -10 19 a10 10 0 0 0 20 0 c0 -5 -4 -10 -10 -19 Z" fill="var(--water)"/></g>
-        <g class="orbit r"><path d="M168 150 c10 -14 26 -14 30 -12 c-2 12 -16 22 -30 12 Z" fill="var(--food)"/></g>
-      </svg>
-    </div>
-    <h1>Su ve karbon ayak izin ne kadar?</h1>
-    <div class="stats">
-      <div class="stat" style="animation-delay:.1s">${ic("timer")}<b>2 dk</b><span>süre</span></div>
-      <div class="stat" style="animation-delay:.18s">${ic("list")}<b>13–17</b><span>soru</span></div>
-      <div class="stat" style="animation-delay:.26s">${ic("award")}<b>4</b><span>rozet</span></div>
-    </div>
-    <h3>Nasıl çalışır</h3>
-    <ol class="steps">
-      <li style="animation-delay:.2s"><span class="si">${ic("house")}</span><div><b>Nerede kaldığını seç</b><span>Evde ya da yurtta, sorular sana göre değişir.</span></div></li>
-      <li style="animation-delay:.3s"><span class="si">${ic("drop")}</span><div><b>Alışkanlıklarını anlat</b><span>Duş, ulaşım, beslenme, alışveriş.</span></div></li>
-      <li style="animation-delay:.4s"><span class="si">${ic("award")}</span><div><b>Ayak izini ve rozetini gör</b><span>Senin için en etkili 3 adımla birlikte.</span></div></li>
-    </ol>
-    <h3>Rozetler</h3>
-    <div class="badges">${PERSONAS.map((p, k) => `<div class="bdg" style="animation-delay:${.3 + k * .08}s"><span class="bi">${ic(p.i)}</span>${p.n}</div>`).join("")}</div>`);
-  actions.innerHTML = `<button class="btn primary" id="start" type="button">Başla ${ic("right")}</button>`;
-  actions.querySelector("#start").onclick = e => { audio(); sfx.win(); burstAt(e.currentTarget, 24); go(STEPS.indexOf(visible()[0]), 1); };
+    <p class="lede">Bir yılda doğaya bıraktığın iz ne kadar? Suyunu ve karbonunu birkaç dakikada ölç.</p>
+    <div class="cats">${[["Ev", "--clay"], ["Enerji", "--sun"], ["Su", "--glacier"], ["Ulaşım", "--dusk"], ["Beslenme", "--moss"]].map(([l, v], k) => `<span style="animation-delay:${.15 + k * .07}s"><b style="background:var(${v})"></b>${l}</span>`).join("")}</div>
+    <p class="small">Evde, yurtta ya da öğrenci evinde kalmana göre 13–17 soru. Sonunda yıllık karbonunu, günlük su ayak izini ve senin için en etkili üç adımı görürsün.</p>
+    <p class="small">Başlıktaki yazı tipi Climate Crisis: harfler, Arktik deniz buzunun 1979'dan bugüne erimesi kadar eriyor.</p>`);
+  actions.innerHTML = `<button class="btn" id="start" type="button">Hesaplamaya başla ${ic("right")}</button>`;
+  actions.querySelector("#start").onclick = () => { audio(); sfx.start(); go(STEPS.indexOf(visible()[0]), 1); };
 }
 
 function go(i, dir = 1) {
   if (dir > 0 && cur >= 0) history.push(cur);
   cur = i;
-  const s = STEPS[i];
-  setBar(s.cat);
-  let body = "", qic = s.i ? `<span class="q-ic">${ic(s.i)}</span>` : "";
+  const s = STEPS[i], vis = visible(), idx = vis.indexOf(s) + 1, c = CATS[s.cat];
+  backBtn.hidden = false; setSegs(idx, vis.length); setCat(c.c);
+  document.querySelector(".wm").style.visibility = "";
+  setBand(`<div class="kicker"><span class="no">${pad(idx)}</span><span>${c.l}</span></div><h2 class="qtitle">${s.q}</h2>${s.sub ? `<p class="qsub">${s.sub}</p>` : ""}`);
+  let body = "";
   if (s.type === "choice") {
-    body = `<div class="opts" role="radiogroup">${s.opts.map((o, k) => `<button type="button" role="radio" aria-checked="${A[s.id] === o.v}" class="opt${A[s.id] === o.v ? " sel" : ""}" data-k="${k}" style="animation-delay:${80 + k * 50}ms"><span class="oi">${o.t || ic(o.i)}</span><span>${o.l}${o.s ? `<small>${o.s}</small>` : ""}</span><span class="radio">${ic("check")}</span></button>`).join("")}</div>`;
+    body = `<div style="display:grid;gap:12px" role="radiogroup" aria-label="${s.q}">${s.opts.map((o, k) => `<button type="button" role="radio" aria-checked="${A[s.id] === o.v}" class="opt${A[s.id] === o.v ? " sel" : ""}" data-k="${k}" style="animation-delay:${60 + k * 45}ms"><span class="oi">${o.t || ic(o.i)}</span><span>${o.l}${o.s ? `<small>${o.s}</small>` : ""}</span><span class="ck">${A[s.id] === o.v ? ic("check") : ""}</span></button>`).join("")}</div>`;
   } else if (s.type === "num") {
     const v = A[s.id] ?? s.def;
     body = `<div class="numbox"><div class="num"><button type="button" data-d="-1" aria-label="Azalt">${ic("minus")}</button><output id="nv">${v}</output><button type="button" data-d="1" aria-label="Artır">${ic("plus")}</button></div>
@@ -656,17 +628,18 @@ function go(i, dir = 1) {
       <label class="field"><input type="number" inputmode="decimal" id="bv" min="0" step="any" value="${b.v}" aria-label="${s.q}"><span id="bu">${b.mode === "tl" ? s.units[0] : s.units[1]}</span></label>
       <div class="conv" id="cv"></div></div>`;
   }
-  const el = swap(`${qic}<h2>${s.q}</h2>${s.sub ? `<p class="sub">${s.sub}</p>` : ""}${body}`, dir);
+  const el = swap(body);
 
   if (s.type === "choice") {
-    actions.innerHTML = `<div class="hint">Bir seçeneğe dokun</div>`;
+    actions.innerHTML = `<div class="hint">Sana en uygun olanı seç</div>`;
     el.querySelectorAll(".opt").forEach(btn => btn.onclick = () => {
-      el.querySelectorAll(".opt").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-checked", "false"); });
-      btn.classList.add("sel"); btn.setAttribute("aria-checked", "true"); A[s.id] = s.opts[+btn.dataset.k].v;
-      sfx.pick(); burstAt(btn.querySelector(".radio"), 10); setTimeout(next, 380);
+      el.querySelectorAll(".opt").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-checked", "false"); x.querySelector(".ck").innerHTML = ""; });
+      btn.classList.add("sel"); btn.setAttribute("aria-checked", "true"); btn.querySelector(".ck").innerHTML = ic("check");
+      A[s.id] = s.opts[+btn.dataset.k].v;
+      sfx.pick(+btn.dataset.k + 1); setTimeout(next, 420);
     });
   } else if (s.type === "num") {
-    actions.innerHTML = `<button class="btn primary" id="nx" type="button">Devam ${ic("right")}</button>`;
+    actions.innerHTML = `<button class="btn" id="nx" type="button">Devam ${ic("right")}</button>`;
     const out = el.querySelector("#nv"), rng = el.querySelector("#rng");
     A[s.id] = A[s.id] ?? s.def;
     const set = v => {
@@ -677,9 +650,9 @@ function go(i, dir = 1) {
     };
     el.querySelectorAll("[data-d]").forEach(b => b.onclick = () => set(A[s.id] + +b.dataset.d));
     rng.oninput = () => set(+rng.value);
-    actions.querySelector("#nx").onclick = e => { sfx.tap(); burstAt(e.currentTarget, 8); next(); };
+    actions.querySelector("#nx").onclick = () => { sfx.tap(); next(); };
   } else if (s.type === "bill") {
-    actions.innerHTML = `<div class="alt">${s.none ? `<button type="button" class="btn ghost" id="none">${s.none}</button>` : ""}<button type="button" class="btn ghost" id="unk">${ic("help")}Bilmiyorum</button></div><button class="btn primary" id="nx" type="button">Devam ${ic("right")}</button>`;
+    actions.innerHTML = `<div class="alt">${s.none ? `<button type="button" class="btn ghost" id="none">${s.none}</button>` : ""}<button type="button" class="btn ghost" id="unk">Bilmiyorum</button></div><button class="btn" id="nx" type="button">Devam ${ic("right")}</button>`;
     const inp = el.querySelector("#bv"), cv = el.querySelector("#cv"), bu = el.querySelector("#bu");
     let mode = A[s.id] && A[s.id].mode === "q" ? "q" : "tl";
     const conv = () => {
@@ -700,7 +673,7 @@ function go(i, dir = 1) {
     });
     inp.oninput = conv; conv();
     inp.onkeydown = e => { if (e.key === "Enter") actions.querySelector("#nx").click(); };
-    actions.querySelector("#nx").onclick = e => { A[s.id] = { mode, v: Math.max(0, parseFloat(inp.value) || 0) }; sfx.tap(); burstAt(e.currentTarget, 8); next(); };
+    actions.querySelector("#nx").onclick = () => { A[s.id] = { mode, v: Math.max(0, parseFloat(inp.value) || 0) }; sfx.tap(); next(); };
     actions.querySelector("#unk").onclick = () => { A[s.id] = { mode: "unk" }; sfx.tap(); next(); };
     if (s.none) actions.querySelector("#none").onclick = () => { A[s.id] = { mode: "none" }; sfx.tap(); next(); };
   }
@@ -712,62 +685,61 @@ function next() {
 }
 backBtn.onclick = () => { sfx.back(); if (!history.length) return intro(); go(history.pop(), -1); };
 
-function countUp(el, to, d, ms = 1400) {
-  if (reduce) { el.firstChild.nodeValue = fmt(to, d); return; }
-  const t0 = performance.now(); let last = 0;
-  const step = now => {
-    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
-    el.firstChild.nodeValue = fmt(to * e, d);
-    if (now - last > 70 && k < 1) { sfx.tick(); last = now; }
-    if (k < 1) requestAnimationFrame(step);
-  };
+function countUp(el, to, d, ms = 1600) {
+  if (reduce) { el.textContent = fmt(to, d); return; }
+  const t0 = performance.now();
+  const step = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(to * e, d); if (k < 1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
 }
 function result() {
-  cur = "done"; setBar();
-  const r = calc(), t = tips(r), p = persona(r.totalCo2);
-  const barsHtml = (obj, cls, f) => { const max = Math.max(...Object.values(obj), 1); return Object.entries(obj).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="br ${cls}"><span>${k}</span><div class="t"><div class="f" data-w="${(v / max * 100).toFixed(1)}"></div></div><span class="v">${f(v)}</span></div>`).join(""); };
+  cur = "done";
+  const r = calc(), t = tips(r), p = persona(r.totalCo2), vis = visible();
+  setSegs(vis.length, vis.length); backBtn.hidden = false; setCat(p.cat);
+  const year = Math.round(1979 + Math.min(1, r.totalCo2 / 8) * 71);
+  setBand(`<div class="kicker"><span>Karbon ayak izin</span></div>
+    <div class="big" id="big">0</div><div class="bigunit">ton CO₂ / yıl</div>
+    <span class="stamp">${ic(p.i)}${p.n}</span>`);
+  const barsHtml = (obj, f) => { const max = Math.max(...Object.values(obj), 1); return Object.entries(obj).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="br"><span>${k}</span><div class="t"><div class="f" data-w="${(v / max * 100).toFixed(1)}"></div></div><span class="v">${f(v)}</span></div>`).join(""); };
   const sc = Math.max(r.totalCo2, DATA.avg.co2.v) * 1.1, sw = Math.max(r.totalW, DATA.avg.water.v) * 1.1;
   const pc = Math.round((r.totalCo2 / DATA.avg.co2.v - 1) * 100), pw = Math.round((r.totalW / DATA.avg.water.v - 1) * 100);
   const rel = x => x >= 0 ? `<b>%${x} üstündesin</b>` : `<b>%${-x} altındasın</b>`;
   const el = swap(`
-    <div class="res-hero"><span class="medal">${ic(p.i)}</span><small>Rozetin</small><h2>${p.n}</h2></div>
-    <div class="meters">
-      <div class="meter c"><div class="mh"><span class="mi">${ic("leaf")}</span><span>Karbon ayak izi</span></div>
-        <div class="val" id="vc">0<small>ton CO₂ / yıl</small></div>
-        <div class="ref"><div class="me" data-w="${(r.totalCo2 / sc * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.co2.v / sc * 100).toFixed(1)}%"></div></div>
-        <span class="cmp">Çizgi Türkiye ortalaması (${fmt(DATA.avg.co2.v, 1)} t). Sen ${rel(pc)}.</span></div>
-      <div class="meter w"><div class="mh"><span class="mi">${ic("drop")}</span><span>Su ayak izi</span></div>
-        <div class="val" id="vw">0<small>litre / gün</small></div>
-        <div class="ref"><div class="me" data-w="${(r.totalW / sw * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.water.v / sw * 100).toFixed(1)}%"></div></div>
-        <span class="cmp">Çizgi dünya ortalaması (${fmt(DATA.avg.water.v)} L). Sen ${rel(pw)}.</span></div>
-    </div>
-    <h3>Senin için en etkili 3 adım</h3>
-    <ol class="list tips">${t.length ? t.map((x, k) => `<li style="animation-delay:${700 + k * 150}ms"><span class="li">${k + 1}</span><div><b>${x.t}</b><span>${x.d}</span></div></li>`).join("") : `<li><span class="li">${ic("check")}</span><div><b>Harika gidiyorsun</b><span>Büyük bir tasarruf alanı görünmüyor. Bildiklerini gruba anlat.</span></div></li>`}</ol>
+    <p class="note">Rakam ne kadar eridiyse ayak izin o kadar büyük. 8 ton ve üstü tamamen erir.</p>
+    <div class="card"><span class="lab">Karbon, Türkiye ile</span>
+      <div class="ref"><div class="me" data-w="${(r.totalCo2 / sc * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.co2.v / sc * 100).toFixed(1)}%"></div></div>
+      <span class="cmp">Turuncu çizgi Türkiye kişi başı ortalaması (${fmt(DATA.avg.co2.v, 1)} t). Sen ${rel(pc)}.</span></div>
+    <div class="card"><span class="lab">Su ayak izin</span>
+      <div class="wnum"><span id="vw">0</span><small>litre / gün</small></div>
+      <div class="ref"><div class="me" data-w="${(r.totalW / sw * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.water.v / sw * 100).toFixed(1)}%"></div></div>
+      <span class="cmp">Turuncu çizgi dünya ortalaması (${fmt(DATA.avg.water.v)} L). Sen ${rel(pw)}. Bunun ${fmt(r.directL)} litresini evde doğrudan kullanıyorsun.</span></div>
+    <h3>Senin için en etkili üç adım</h3>
+    <ol class="list">${t.length ? t.map((x, k) => `<li style="animation-delay:${600 + k * 140}ms"><span class="n">${k + 1}</span><div><b>${x.t}</b><span>${x.d}</span></div></li>`).join("") : `<li><span class="n">✓</span><div><b>Harika gidiyorsun</b><span>Büyük bir tasarruf alanı görünmüyor. Bildiklerini gruba anlat.</span></div></li>`}</ol>
     <h3>Nereden geliyor?</h3>
-    <div class="bars">${barsHtml(r.co2, "c", v => v >= 1000 ? fmt(v / 1000, 1) + " t" : fmt(v) + " kg")}</div>
-    <div class="bars">${barsHtml(r.water, "w", v => fmt(v) + " L")}</div>
-    <p class="note">Evde doğrudan kullandığın su günde ${fmt(r.directL)} litre${r.estimated.length ? `. Bilmediğin ${r.estimated.join(", ")} için ortalama değer kullanıldı` : ""}${isDorm() ? ". Yurt enerjisi öğrenci başına tahmini paydır" : ""}. Türkiye ortalaması sanayi dahil tüm sektörleri içerir, kişisel hesap genelde daha düşük çıkar.</p>
+    <div class="card"><span class="lab">Karbon</span><div class="bars">${barsHtml(r.co2, v => v >= 1000 ? fmt(v / 1000, 1) + " t" : fmt(v) + " kg")}</div></div>
+    <div class="card"><span class="lab">Su</span><div class="bars">${barsHtml(r.water, v => fmt(v) + " L")}</div></div>
+    <p class="note">${r.estimated.length ? `Bilmediğin ${r.estimated.join(", ")} için ortalama değer kullanıldı. ` : ""}${isDorm() ? "Yurt enerjisi öğrenci başına tahmini paydır. " : ""}Türkiye ortalaması sanayi dahil tüm sektörleri içerir, kişisel hesap genelde daha düşük çıkar.</p>
     <h3>Biliyor muydun?</h3>
-    <ul class="list facts">${FACTS.map((f, k) => `<li style="animation-delay:${1100 + k * 100}ms"><span class="li">${ic(f[0])}</span><p>${f[1]}</p></li>`).join("")}</ul>
+    <ul class="list">${FACTS.map((f, k) => `<li style="animation-delay:${900 + k * 90}ms">${ic(f[0])}<p>${f[1]}</p></li>`).join("")}</ul>
     <details class="data"><summary>Fiyatlar, katsayılar ve kaynaklar</summary><div class="tbl"><table><thead><tr><th>Kalem</th><th>Değer</th><th>Kaynak</th></tr></thead><tbody>${dataRows()}</tbody></table></div>
     <p class="note">Yöntem: TL ÷ birim fiyat = miktar; miktar × emisyon katsayısı = kg CO₂. Su ayak izi = evde doğrudan kullanım + sanal su (yiyecek, kıyafet, pet şişe üretimi). Sonuçlar farkındalık amaçlı yaklaşık değerlerdir. Son güncelleme: ${DATA.updated}.</p></details>`);
-  actions.innerHTML = `<div class="row2"><button class="btn primary" id="copy" type="button">${ic("copy")}Sonucu kopyala</button><button class="btn ghost" id="again" type="button" aria-label="Baştan başla">${ic("redo")}</button></div>`;
+  actions.innerHTML = `<div class="row2"><button class="btn" id="copy" type="button">${ic("copy")}Sonucu kopyala</button><button class="btn ghost" id="again" type="button" aria-label="Baştan başla">${ic("redo")}</button></div>`;
   sfx.win();
   setTimeout(() => {
-    countUp(el.querySelector("#vc"), r.totalCo2, 1); countUp(el.querySelector("#vw"), r.totalW, 0);
+    const big = document.getElementById("big");
+    countUp(big, r.totalCo2, 1); countUp(el.querySelector("#vw"), r.totalW, 0);
+    big.style.fontVariationSettings = `"YEAR" ${year}`;
     el.querySelectorAll("[data-w]").forEach(x => x.style.width = x.dataset.w + "%");
-    burstAt(el.querySelector(".medal"), 60);
-  }, 300);
+    burstAt(big, 26);
+  }, 350);
   actions.querySelector("#again").onclick = () => { for (const k in A) delete A[k]; sfx.back(); intro(); };
   actions.querySelector("#copy").onclick = () => {
     const txt = `Doğa ile Dönüş ayak izim (${p.n}):\n• Karbon: ${fmt(r.totalCo2, 1)} ton CO₂/yıl (Türkiye ort. ${fmt(DATA.avg.co2.v, 1)})\n• Su: ${fmt(r.totalW)} L/gün (dünya ort. ${fmt(DATA.avg.water.v)})\nHedeflerim:\n${t.map(x => "- " + x.t).join("\n")}`;
     const fail = () => { const n = document.createElement("p"); n.className = "note"; n.style.whiteSpace = "pre-line"; n.textContent = txt; el.appendChild(n); n.scrollIntoView({ behavior: "smooth" }); toast("Metni seçip kopyalayabilirsin"); };
-    try { navigator.clipboard.writeText(txt).then(() => { sfx.pick(); toast("Kopyalandı, gruba yapıştırabilirsin"); }, fail); } catch (e) { fail(); }
+    try { navigator.clipboard.writeText(txt).then(() => { sfx.tap(); toast("Kopyalandı, gruba yapıştırabilirsin"); }, fail); } catch (e) { fail(); }
   };
 }
 function dataRows() {
-  const rows = [], f = o => typeof o.v === "object" && !Array.isArray(o.v) ? Object.values(o.v).map(x => fmt(x)).join(" / ") : Array.isArray(o.v) ? o.v.map(x => fmt(x[1], 2)).join(" / ") : fmt(o.v, o.v < 10 ? 2 : 0);
+  const rows = [], f = o => typeof o.v === "object" && !Array.isArray(o.v) ? Object.values(o.v).map(x => fmt(x, x < 1 ? 2 : 0)).join(" / ") : Array.isArray(o.v) ? o.v.map(x => fmt(x[1], 2)).join(" / ") : fmt(o.v, o.v < 10 ? 2 : 0);
   const names = { elec: "Elektrik", gas: "Doğalgaz", benzin: "Benzin", motorin: "Motorin", lpg: "LPG", waterTiers: "Su (İSKİ kademeleri)", transit: "Toplu taşıma", flyDom: "Yurt içi uçuş", flyInt: "Yurt dışı uçuş", clothes: "Kıyafet", bottle: "Pet şişe", diet: "Beslenme", homeElec: "Ev elektriği (tahmin)", homeGas: "Ev doğalgazı (tahmin)", dormElec: "Yurt elektriği", dormGas: "Yurt ısınması", heater: "Odada ısıtıcı", shower: "Duş", toilet: "Tuvalet", tapOpen: "Açık musluk", kitchen: "Mutfak", co2: "Türkiye ortalaması", water: "Su ortalaması" };
   for (const grp of ["price", "co2", "estimate", "water", "avg"]) for (const [k, o] of Object.entries(DATA[grp])) rows.push(`<tr><td>${names[k] || k}</td><td class="n">${f(o)} ${o.unit}</td><td>${o.src}</td></tr>`);
   return rows.join("");
