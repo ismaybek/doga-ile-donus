@@ -234,11 +234,13 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
 @media (max-height: 760px) { .cats { display: none; } }
 .gtx { margin: 0; color: var(--text); font-size: 14px; }
 .gimp { border-left-width: 8px; border-left-color: var(--cat); }
-.gscl { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 6px 0; }
+.gscl { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 6px 0; }
 .gscl + .gscl { border-top: 2px solid var(--soft-rule); }
 .gscl .k { font: 700 12px var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .gscl b { display: block; font: 700 17px var(--display); }
 .gscl div span { font-size: 13px; color: var(--muted); }
+.gscl div span.gtx { font-size: 14px; color: var(--text); }
+.gscl .k { overflow-wrap: anywhere; }
 .gentry { margin-top: 2px; padding: 10px 14px; font-size: 16px; }
 </style>
 </head>
@@ -788,6 +790,38 @@ function countUp(el, to, d, ms = 1600) {
   const step = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(to * e, d); if (k < 1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
 }
+// Sonucu somutlaştırma: ağaç ~21 kg CO₂/yıl emer; 1 ton CO₂ ≈ 3 m² Arktik yaz deniz buzu kaybı (Notz ve Stroeve 2016)
+// Olimpik havuz 2,5 milyon L; kişi başı içme suyu ~2 L/gün; 1,5 °C için 2030 hedefi kişi başı ~2,5 t (Hot or Cool Enstitüsü)
+const TREE = 21, ICE = 3, POOL = 2.5e6, TARGET = 2.5;
+const IMPACT = {
+  "Beslenme": "Gıda sistemi dünyadaki sera gazının yaklaşık üçte birinden sorumlu. Hayvancılık için açılan meralar ve yem tarlaları orman kaybının başlıca nedeni.",
+  "Ev enerjisi": "Türkiye'nin elektriğinin yaklaşık üçte biri hâlâ kömürden geliyor. Kömür santralleri hem karbon hem de nefes aldığımız havayı kirleten partikül salar.",
+  "Ulaşım": "Trafik şehirlerdeki hava kirliliğinin en büyük kaynaklarından biri. Yakıt yanarken karbonun yanında akciğerlere zarar veren gazlar da çıkar.",
+  "Uçuş": "Uçaklar karbonu yüksek irtifada saldığı için ısınma etkileri yerdekinden daha büyük. Tek bir uzun uçuş, birçok ülkede bir kişinin yıllık salımını geçer.",
+  "Alışveriş": "Moda sektörü dünyadaki karbon salımının %2 ile %8'i arasından sorumlu. Giysilerin çoğu birkaç yıl içinde çöpe gidiyor.",
+  "Yiyecek": "Türkiye'de kullanılan suyun dörtte üçünden fazlası tarıma gidiyor. Göller ve sulak alanlar bu yüzden küçülüyor, yeraltı suyu çekildikçe obruklar açılıyor.",
+  "Evde kullanım": "İstanbul ve Ankara'nın barajları kurak yıllarda kritik seviyelere iniyor. Evde harcadığın her litre bu barajlardan geliyor.",
+  "Kıyafet": "Pamuk sulaması için nehirlerin yönü değiştirildi ve bir zamanlar dünyanın dördüncü büyük gölü olan Aral Gölü büyük ölçüde kurudu.",
+  "Pet şişe": "Pet şişelerin büyük kısmı geri dönüşmüyor. Denize karışanlar yüzlerce yılda mikroplastiğe dönüşüp besin zincirine giriyor."
+};
+function meaning(r) {
+  const kg = r.totalCo2 * 1000, yearL = r.totalW * 365;
+  const r1 = x => x < 10 ? (Math.round(x * 10) / 10).toLocaleString("tr-TR") : fmt(x);
+  const topC = Object.entries(r.co2).sort((a, b) => b[1] - a[1])[0][0], topW = Object.entries(r.water).sort((a, b) => b[1] - a[1])[0][0];
+  const trTot = r.totalCo2 * SCALE_TR, trNow = DATA.avg.co2.v * SCALE_TR, wTot = r.totalCo2 * SCALE_W, k = r.totalCo2 / TARGET;
+  return `<h3>Bu ne demek?</h3>
+    <div class="card"><span class="lab">Senin bir yılın</span>
+      <div class="gscl"><span class="k">Ağaç</span><div><b>${fmt(kg / TREE)} ağaç</b><span>Bu karbonu emmek için bu kadar ağacın bir yıl boyunca çalışması gerekir.</span></div></div>
+      <div class="gscl"><span class="k">Buz</span><div><b>${r1(r.totalCo2 * ICE)} m² deniz buzu</b><span>Her ton CO₂ Arktik'te yaklaşık 3 m² yaz buzunun erimesine katkı yapar.</span></div></div>
+      <div class="gscl"><span class="k">Su</span><div><b>${r1(yearL / POOL)} olimpik havuz</b><span>Yılda ${bigL(yearL)} litre. Bu, ${fmt(yearL / 730)} kişinin bir yıllık içme suyu demek.</span></div></div></div>
+    <div class="card"><span class="lab">Herkes senin gibi yaşasa</span>
+      <div class="gscl"><span class="k">Türkiye</span><div><b>${fmt(trTot / 1e6)} milyon ton CO₂</b><span>Bugün ortalama yaklaşık ${fmt(trNow / 1e6)} milyon ton. Bunu emmek için ${r1(trTot * 1000 / TREE / 1e9)} milyar ağaç gerekirdi.</span></div></div>
+      <div class="gscl"><span class="k">Dünya</span><div><b>${r1(wTot / 1e9)} milyar ton CO₂</b><span>Isınmayı 1,5 °C'de tutmak için 2030'da kişi başı yaklaşık ${fmt(TARGET, 1)} ton hedefleniyor. ${k > 1.05 ? `Sen bunun ${r1(k)} katındasın.` : "Sen bu hedefin içindesin."}</span></div></div></div>
+    <div class="card gimp"><span class="lab">Doğaya etkisi</span>
+      <div class="gscl"><span class="k">${topC}</span><div><span class="gtx">${IMPACT[topC]}</span></div></div>
+      <div class="gscl"><span class="k">${topW}</span><div><span class="gtx">${IMPACT[topW]}</span></div></div>
+      <span class="cmp">Karbonunda en büyük pay ${topC.toLocaleLowerCase("tr-TR")}, suyunda ${topW.toLocaleLowerCase("tr-TR")}.</span></div>`;
+}
 function result() {
   cur = "done";
   const r = calc(), t = tips(r), p = persona(r.totalCo2), vis = visible();
@@ -810,6 +844,7 @@ function result() {
       <div class="wnum"><span id="vw">0</span><small>litre / gün</small></div>
       <div class="ref"><div class="me" data-w="${(r.totalW / sw * 100).toFixed(1)}"></div><div class="avg" style="left:${(DATA.avg.water.v / sw * 100).toFixed(1)}%"></div></div>
       <span class="cmp">Turuncu çizgi dünya ortalaması (${fmt(DATA.avg.water.v)} L). Sen ${rel(pw)}. Bunun ${fmt(r.directL)} litresini evde doğrudan kullanıyorsun.</span></div>
+    ${meaning(r)}
     <h3>Senin için en etkili üç adım</h3>
     <ol class="list">${t.length ? t.map((x, k) => `<li style="animation-delay:${600 + k * 140}ms"><span class="n">${k + 1}</span><div><b>${x.t}</b><span>${x.d}</span></div></li>`).join("") : `<li><span class="n">✓</span><div><b>Harika gidiyorsun</b><span>Büyük bir tasarruf alanı görünmüyor. Bildiklerini gruba anlat.</span></div></li>`}</ol>
     <h3>Nereden geliyor?</h3>
