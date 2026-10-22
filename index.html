@@ -540,7 +540,11 @@ const fmt = (n, d = 0) => n.toLocaleString("tr-TR", { maximumFractionDigits: d, 
 function tips(r) {
   const L = [], W = DATA.water, C = DATA.co2;
   const sh = A.shower ?? 8, sf = A.showerFreq ?? 7;
-  if (sf > 0 && sh > 5) { const l = (sh - 5) * W.shower.v * sf * 52; L.push({ s: l * .02, t: `Duşu ${sh} dakikadan 5 dakikaya indir`, d: `Yılda yaklaşık ${fmt(l)} litre su kurtarırsın.` }); }
+  // Öneriler ulaşılabilir küçük adımlar: süreyi bir anda değil, yaklaşık üçte bir kısaltmak
+  if (sf > 0 && sh > 5) {
+    const to = Math.max(5, Math.min(sh - 2, Math.round(sh * .7))), l = (sh - to) * W.shower.v * sf * 52;
+    L.push({ s: l * .02, t: `Duşu ${sh} dakikadan ${to} dakikaya indir`, d: `Şarkı listesinden bir iki şarkı eksilt yeter. Yılda yaklaşık ${fmt(l)} litre su kurtarırsın.` });
+  }
   if (A.tap) L.push({ s: W.tapOpen.v * 365 * .02, t: "Diş fırçalarken musluğu kapat", d: `Yılda yaklaşık ${fmt((W.tapOpen.v - 4) * 365)} litre su.` });
   const order = ["high", "medium", "low", "fish", "veg", "vegan"], i = order.indexOf(A.diet);
   if (i >= 0 && i < 2) {
@@ -549,11 +553,11 @@ function tips(r) {
   }
   if (r.car > 100) L.push({ s: r.car * .3, t: "Kısa yolları yürü ya da bisiklete bin", d: `Araba kullanımını %30 azaltmak yılda ${fmt(r.car * .3)} kg CO₂ eder.` });
   const fd = (A.flyDom || 0) * C.flyDom.v;
-  if (fd > 0) L.push({ s: fd * .8, t: "Yurt içinde uçak yerine tren ya da otobüs dene", d: `Yılda yaklaşık ${fmt(fd * .8)} kg CO₂ daha az.` });
+  if (fd > 0) { const one = C.flyDom.v * .8; L.push({ s: one, t: "Bir yurt içi yolculuğunu uçak yerine tren ya da otobüsle yap", d: `Tek bir yolculukla yılda yaklaşık ${fmt(one)} kg CO₂ daha az.` }); }
   if (isDorm() && A.heater === "elektrik") L.push({ s: DATA.estimate.heater.v * 12 * C.elec.v * .5, t: "Odadaki ısıtıcıyı daha az çalıştır, kat kat giyin", d: `Isıtıcıyı yarı yarıya azaltmak yılda ${fmt(DATA.estimate.heater.v * 6 * C.elec.v)} kg CO₂.` });
   const home = r.co2["Ev enerjisi"];
   if (!isDorm() && home > 50) L.push({ s: home * .1, t: "Bekleme modundaki cihazları kapat, kombiyi 1 °C düşür", d: `Ev enerjinde yaklaşık %10, kişi başı yılda ${fmt(home * .1)} kg CO₂.` });
-  if ((A.bottle || 0) > 0) { const bc = A.bottle * 52 * C.bottle.v[A.bottleSize || "small"]; L.push({ s: bc, t: "Pet şişe yerine matara taşı", d: `Yılda ${fmt(A.bottle * 52)} şişe ve ${fmt(bc)} kg CO₂ daha az.` }); }
+  if ((A.bottle || 0) > 0) { const n = Math.max(1, Math.ceil(A.bottle / 2)), bc = n * 52 * C.bottle.v[A.bottleSize || "small"]; L.push({ s: bc, t: n === A.bottle ? "Pet şişe yerine matara taşı" : `Haftada ${n} pet şişe yerine matarayı doldur`, d: `Yılda ${fmt(n * 52)} şişe ve ${fmt(bc)} kg CO₂ daha az.` }); }
   if ((A.clothes || 0) > 0) L.push({ s: A.clothes * 6 * C.clothes.v, t: "Yeni kıyafetin yarısını ikinci el ya da takasla al", d: `Yılda ${fmt(A.clothes * 6 * C.clothes.v)} kg CO₂ ve ${fmt(A.clothes * 6 * W.clothes.v)} litre su.` });
   return L.sort((a, b) => b.s - a.s).slice(0, 3);
 }
