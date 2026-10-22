@@ -766,7 +766,7 @@ function dataRows() {
 }
 
 // ===== Grup panosu: Firestore REST (SDK yok). Firebase projesi bağlanınca bu iki alanı doldur =====
-const FIREBASE = { apiKey: "", projectId: "" };
+const FIREBASE = { apiKey: "AIzaSyDfm3_eMdOh_RRt2zn8xhu2ernkd82y2T8", projectId: "doga-ile-donus" };
 const boardReady = () => !!(FIREBASE.apiKey && FIREBASE.projectId);
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem("ai_" + k)); } catch (e) { return null; } },
