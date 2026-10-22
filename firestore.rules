@@ -8,5 +8,14 @@ service cloud.firestore {
         && request.resource.data.name is string
         && request.resource.data.name.size() <= 24;
     }
+    match /groups/{g}/guess/{m} {
+      allow read: if true;
+      allow write: if request.time < timestamp.date(2026, 12, 31)
+        && request.resource.data.keys().hasOnly(['name', 'best', 'plays'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 24
+        && request.resource.data.best is int
+        && request.resource.data.best <= 800;
+    }
   }
 }

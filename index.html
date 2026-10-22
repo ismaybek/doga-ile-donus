@@ -135,7 +135,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--water); out
 
 /* intro */
 html, button, input, .opt, .num button { touch-action: manipulation; }
-.melt { font-family: var(--wordmark); font-size: min(14.2vw, 7.6dvh, 62px); line-height: .95; margin: 2px 0 0; font-variation-settings: "YEAR" 1979; letter-spacing: -.01em; }
+.melt { font-family: var(--wordmark); font-size: min(14.2vw, 7dvh, 62px); line-height: .95; margin: 2px 0 0; font-variation-settings: "YEAR" 1979; letter-spacing: -.01em; }
 .yr { display: grid; gap: 4px; }
 .yr-top { display: flex; justify-content: space-between; align-items: baseline; font: 500 12px var(--mono); }
 .yr-top b { font: 400 22px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; }
@@ -213,6 +213,26 @@ td.n { font-family: var(--mono); white-space: nowrap; }
 .chg.up { background: var(--clay); color: var(--ink); border-color: var(--ink); }
 canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.melt.gt { font-size: min(11.5vw, 6.4dvh, 52px); line-height: 1.04; margin-bottom: 12px; }
+.gitem { display: flex; align-items: center; gap: 12px; }
+.gitem .i { width: 40px; height: 40px; flex: none; stroke-width: 1.7; }
+.gscale { display: flex; justify-content: space-between; font: 500 11px var(--mono); color: var(--muted); margin-top: -8px; }
+.gline { position: relative; height: 12px; border: 2px solid var(--rule); border-radius: 99px; margin: 6px 0 4px; }
+.gline i { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; border: 2px solid var(--ink); }
+.gline .ga { background: var(--glacier); z-index: 1; animation: pop .5s .35s cubic-bezier(.2,1.6,.4,1) both; }
+.gline .gg { background: var(--sheet); width: 12px; height: 12px; margin: -6px 0 0 -6px; border-color: var(--rule); }
+.gpts { display: flex; align-items: baseline; justify-content: center; gap: 8px; animation: pop .5s .5s cubic-bezier(.2,1.6,.4,1) both; }
+.gpts b { font: 400 56px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.gpts span { font: 700 16px var(--display); color: var(--muted); }
+@keyframes pop { from { transform: scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
+.list.gres > li { grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; }
+.list.gres em { font: 400 18px var(--wordmark); font-style: normal; font-variation-settings: "YEAR" 1979; }
+.list.board.gb > li { grid-template-columns: 22px minmax(0, 1fr) 70px; }
+.num.gnum { gap: 10px; }
+.num.gnum button { flex: none; }
+.num.gnum output { flex: 1; min-width: 0; font-size: clamp(34px, 11vw, 50px); }
+@media (max-height: 760px) { .cats { display: none; } }
+.gentry { margin-top: 2px; padding: 10px 14px; font-size: 16px; }
 </style>
 </head>
 <body>
@@ -427,7 +447,15 @@ const ICONS = {
   trees: ["M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z", "M7 16v6", "M13 19v3", "M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"],
   sprout: ["M7 20h10", "M10 20c5.5-2.5.8-6.4 3-10", "M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z", "M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"],
   minus: ["M5 12h14"], plus: ["M12 5v14", "M5 12h14"],
-  bulb: ["M9 18h6", "M10 22h4", "M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"]
+  bulb: ["M9 18h6", "M10 22h4", "M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"],
+  coffee: ["M17 8h1a4 4 0 1 1 0 8h-1", "M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z", "M6 2v2", "M10 2v2", "M14 2v2"],
+  glass: ["M5 3h14l-1.6 17.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8z", "M5.6 9h12.8"],
+  apple: ["M12 6.5c-1.5-1-3.5-1.3-5 0-2.5 2-2 7 0 10.5 1.3 2.3 3 3.7 5 2.5 2 1.2 3.7-.2 5-2.5 2-3.5 2.5-8.5 0-10.5-1.5-1.3-3.5-1-5 0Z", "M12 6.5V3", "M12 4c1-1.5 2.5-2 4-2"],
+  burger: ["M4 11a8 6 0 0 1 16 0z", "M3 14h18", "M4 17h16v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"],
+  jeans: ["M6 2h12l1 20h-5l-2-12-2 12H5z", "M6 6h12"],
+  phone: [{ r: [6, 2, 12, 20, 2] }, "M11 18h2"],
+  paper: ["M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z", "M14 2v6h6", "M8 13h8", "M8 17h8"],
+  choco: [{ r: [5, 3, 14, 18, 2] }, "M5 9h14", "M5 15h14", "M12 3v18"]
 };
 function ic(name, cls = "") {
   const parts = (ICONS[name] || ICONS.help).map(p => typeof p === "string" ? `<path d="${p}"/>` : p.c ? `<circle cx="${p.c[0]}" cy="${p.c[1]}" r="${p.c[2]}"/>` : `<rect x="${p.r[0]}" y="${p.r[1]}" width="${p.r[2]}" height="${p.r[3]}" rx="${p.r[4]}"/>`).join("");
@@ -660,7 +688,9 @@ function intro() {
   swap(`
     <p class="lede">Bir yılda doğaya bıraktığın iz ne kadar? Suyunu ve karbonunu birkaç dakikada ölç.</p>
     <div class="cats">${[["Ev", "--clay"], ["Enerji", "--sun"], ["Su", "--glacier"], ["Ulaşım", "--dusk"], ["Beslenme", "--moss"]].map(([l, v], k) => `<span style="animation-delay:${.15 + k * .07}s"><b style="background:var(${v})"></b>${l}</span>`).join("")}</div>
-    <p class="small">Evde, yurtta ya da öğrenci evinde kalmana göre 13–17 soru. Sonunda karbonunu, suyunu ve senin için en etkili üç adımı görürsün.</p>`);
+    <p class="small">Evde, yurtta ya da öğrenci evinde kalmana göre 13–17 soru.</p>
+    <button type="button" class="opt gentry" id="toGuess"><span class="oi">${ic("drop")}</span><span>Tahmin et oyunu<small>Tişört, kahve, telefon: kaç litre su?</small></span><span class="ck">${ic("right")}</span></button>`);
+  screen.querySelector("#toGuess").onclick = () => { cancelAnimationFrame(meltAnim); audio(); sfx.tap(); guessIntro(); };
   actions.innerHTML = `<div class="row2"><button class="btn" id="start" type="button">Hesaplamaya başla ${ic("right")}</button><button class="btn ghost" id="toBoard" type="button" aria-label="Grup panosu">${ic("users")}</button></div>`;
   actions.querySelector("#toBoard").onclick = () => { cancelAnimationFrame(meltAnim); audio(); sfx.tap(); board(); };
   actions.querySelector("#start").onclick = () => { cancelAnimationFrame(meltAnim); audio(); sfx.start(); go(STEPS.indexOf(visible()[0]), 1); };
@@ -743,7 +773,7 @@ function next() {
   const vis = visible(), pos = vis.indexOf(STEPS[cur]);
   if (pos < vis.length - 1) go(STEPS.indexOf(vis[pos + 1]), 1); else { history.push(cur); result(); }
 }
-backBtn.onclick = () => { sfx.back(); if (cur === "board" || !history.length) return intro(); go(history.pop(), -1); };
+backBtn.onclick = () => { sfx.back(); if (cur === "gplay") return guessIntro(); if (cur === "board" || cur === "guess" || !history.length) return intro(); go(history.pop(), -1); };
 
 function countUp(el, to, d, ms = 1600) {
   if (reduce) { el.textContent = fmt(to, d); return; }
@@ -915,8 +945,172 @@ function board(groupArg) {
   render(); boardTimer = setInterval(() => { if (cur === "board") render(); else clearInterval(boardTimer); }, 15000);
 }
 
+// ===== Tahmin et oyunu: bir ürünün arkasındaki sanal suyu tahmin et =====
+// Değerler Water Footprint Network ve WWF ortalamalarından yaklaşık
+const ITEMS = [
+  { n: "Bir fincan kahve", i: "coffee", v: 132, d: "Suyun neredeyse tamamı kahve çekirdeğini yetiştirmek için harcanır." },
+  { n: "Bir bardak çay", i: "glass", v: 27, d: "Aynı keyif, kahvenin beşte biri kadar su." },
+  { n: "Bir dilim ekmek", i: "wheat", v: 40, d: "Buğdayın tarlada sulanması ve yağmur suyu." },
+  { n: "Bir yumurta", i: "egg", v: 196, d: "Tavuğun yediği yemi yetiştirmek için gereken su." },
+  { n: "Bir elma", i: "apple", v: 125, d: "Elma ağacı bir yıl boyunca su ister." },
+  { n: "Bir bardak süt", i: "glass", v: 255, d: "İneğin içtiği su ve yediği yemin yetişmesi." },
+  { n: "Bir hamburger", i: "burger", v: 2400, d: "Köftedeki et, suyun büyük kısmını tek başına taşır." },
+  { n: "1 kg tavuk eti", i: "drum", v: 4300, d: "Sığır etinin üçte birinden az, ama yine de çok." },
+  { n: "1 kg sığır eti", i: "steak", v: 15400, d: "Hayvanın yıllarca yediği yem ve içtiği su birikir." },
+  { n: "Bir pamuklu tişört", i: "shirt", v: 2700, d: "Pamuk en çok su isteyen tarım ürünlerinden biridir." },
+  { n: "Bir kot pantolon", i: "jeans", v: 8000, d: "Pamuğun sulanması, boyanması ve yıkanması." },
+  { n: "Bir akıllı telefon", i: "phone", v: 12000, d: "Maden çıkarma, çip üretimi ve fabrikalar." },
+  { n: "Bir A4 kâğıt", i: "paper", v: 10, d: "Ağaçtan kâğıda giden yolda harcanan su." },
+  { n: "Bir tablet çikolata (100 g)", i: "choco", v: 1700, d: "Kakao ağaçları sıcak ve çok yağışlı yerlerde yetişir." },
+  { n: "1 kg pirinç", i: "utensils", v: 2500, d: "Pirinç tarlaları aylarca su altında tutulur." }
+];
+const ROUNDS = 8, GMIN = 1, GMAX = 20000;
+const toG = p => GMIN * Math.pow(GMAX / GMIN, p / 1000);
+const toP = g => Math.round(Math.log(g / GMIN) / Math.log(GMAX / GMIN) * 1000);
+const nice = g => { const e = Math.pow(10, Math.max(0, Math.floor(Math.log10(g)) - 1)); return Math.max(1, Math.round(g / e) * e); };
+const gScore = (g, a) => Math.max(0, Math.round(100 * (1 - Math.abs(Math.log10(g / a)))));
+const GCATS = ["water", "food", "move", "energy", "home"];
+let G = null;
+
+function guessIntro() {
+  cancelAnimationFrame(meltAnim); clearInterval(boardTimer);
+  cur = "guess"; history = []; backBtn.hidden = false; segs.hidden = true;
+  document.querySelector(".wm").style.visibility = "";
+  setCat("water");
+  setBand(`<div class="kicker"><span>Tahmin et</span></div><div class="melt gt">BU KAÇ<br>LİTRE SU?</div>`);
+  const best = store.get("guessBest");
+  swap(`<p class="lede">Bir tişört, bir fincan kahve, bir telefon. Üretilmeleri için ne kadar su harcanıyor?</p>
+    <div class="card"><span class="lab">Nasıl oynanır</span>
+      <p class="small" style="margin:0">${ROUNDS} ürün gelecek. Kaydırıcıyla kaç litre su harcandığını tahmin et. Gerçeğe ne kadar yakınsan o kadar puan, her ürün en fazla 100.</p></div>
+    ${best ? `<p class="small">En iyi puanın: <b>${fmt(best)}</b> / ${ROUNDS * 100}</p>` : ""}`);
+  actions.innerHTML = `<div class="row2"><button class="btn" id="gStart" type="button">Oyuna başla ${ic("right")}</button><button class="btn ghost" id="gBoard" type="button" aria-label="Oyun panosu">${ic("users")}</button></div>`;
+  actions.querySelector("#gStart").onclick = () => {
+    audio(); sfx.start();
+    const pool = ITEMS.slice().sort(() => Math.random() - .5).slice(0, ROUNDS);
+    G = { pool, k: 0, res: [] }; guessRound();
+  };
+  actions.querySelector("#gBoard").onclick = () => { audio(); sfx.tap(); guessEnd(true); };
+}
+
+function guessRound() {
+  const it = G.pool[G.k], cat = GCATS[G.k % GCATS.length];
+  cur = "gplay"; setSegs(G.k + 1, ROUNDS); setCat(cat);
+  setBand(`<div class="kicker"><span class="no">${pad(G.k + 1)}</span><span>Tahmin et</span></div>
+    <div class="gitem">${ic(it.i)}<h2 class="qtitle">${it.n}</h2></div><p class="qsub">Üretimi için kaç litre su harcanır?</p>`);
+  let p = toP(150);
+  const el = swap(`<div class="numbox"><div class="num gnum"><button type="button" data-d="-1" aria-label="Azalt">${ic("minus")}</button><output id="gv">${fmt(nice(toG(p)))}</output><button type="button" data-d="1" aria-label="Artır">${ic("plus")}</button></div>
+    <div class="num-unit">litre</div>
+    <input type="range" id="gr" min="0" max="1000" step="1" value="${p}" aria-label="Tahminin, litre">
+    <div class="gscale"><span>1</span><span>10</span><span>100</span><span>1.000</span><span>10.000</span></div></div>`);
+  const out = el.querySelector("#gv"), rng = el.querySelector("#gr");
+  let lastV = nice(toG(p));
+  const set = q => {
+    p = Math.min(1000, Math.max(0, q)); rng.value = p;
+    const v = nice(toG(p)); if (v === lastV) return;
+    const up = v > lastV; lastV = v; out.textContent = fmt(v);
+    out.classList.remove("bump"); void out.offsetWidth; out.classList.add("bump");
+    (up ? sfx.up : sfx.down)();
+  };
+  el.querySelectorAll("[data-d]").forEach(b => b.onclick = () => set(p + +b.dataset.d * 25));
+  rng.oninput = () => set(+rng.value);
+  actions.innerHTML = `<button class="btn" id="gGo" type="button">Tahminim bu ${ic("check")}</button>`;
+  actions.querySelector("#gGo").onclick = () => reveal(it, lastV);
+  sfx.next();
+}
+
+function reveal(it, g) {
+  const s = gScore(g, it.v), r = g / it.v;
+  G.res.push({ n: it.n, g, a: it.v, s });
+  const msg = s >= 90 ? "Neredeyse tam isabet!" : s >= 70 ? "Çok yakın!" : s >= 40 ? "Fena değil." : r < 1 ? "Gerçek çok daha fazla!" : "Gerçek çok daha az!";
+  const r1 = x => x < 10 ? (Math.round(x * 10) / 10).toLocaleString("tr-TR") : fmt(x);
+  const cmp = it.v >= 900 ? `${r1(it.v / 150)} dolu küvet` : `${r1(it.v / 9)} dakikalık duş`;
+  const pos = v => (toP(Math.min(GMAX, Math.max(GMIN, v))) / 10).toFixed(1);
+  const el = swap(`<div class="card grev">
+      <span class="lab">Gerçek</span>
+      <div class="wnum"><span id="ga">0</span><small>litre</small></div>
+      <div class="gline"><i class="ga" style="left:${pos(it.v)}%"></i><i class="gg" style="left:${pos(g)}%"></i></div>
+      <span class="cmp">Senin tahminin <b>${fmt(g)} L</b>. ${msg}</span></div>
+    <div class="card"><span class="lab">Bu ne kadar su?</span><p class="small" style="margin:0;color:var(--text)">Yaklaşık ${cmp} kadar. ${it.d}</p></div>
+    <div class="gpts"><b>+${s}</b><span>puan</span></div>`);
+  const last = G.k === ROUNDS - 1;
+  actions.innerHTML = `<button class="btn" id="gNx" type="button">${last ? "Sonucu gör" : "Sıradaki ürün"} ${ic("right")}</button>`;
+  actions.querySelector("#gNx").onclick = () => { sfx.tap(); if (last) guessEnd(); else { G.k++; guessRound(); } };
+  [0, .12, .24].forEach((d, k) => setTimeout(() => sfx.drop(), d * 1000 + k));
+  setTimeout(() => {
+    countUp(el.querySelector("#ga"), it.v, 0, 1100);
+    if (s >= 70) { sfx.pick(5); burstAt(el.querySelector(".gpts"), s >= 90 ? 24 : 12); } else sfx.down();
+  }, 250);
+}
+
+const gTitle = t => t >= ROUNDS * 80 ? ["Su Dedektifi", "award"] : t >= ROUNDS * 55 ? ["Damla Avcısı", "drop"] : t >= ROUNDS * 30 ? ["Meraklı Gezgin", "leaf"] : ["Yolun Başında", "sprout"];
+
+function guessEnd(boardOnly) {
+  cur = "gplay"; segs.hidden = !!boardOnly;
+  const me = store.get("me") || {};
+  if (boardOnly) {
+    setCat("food");
+    setBand(`<div class="kicker"><span>Tahmin et · pano</span></div><div class="gcode">${me.group ? esc(me.group) : "KOD?"}</div>`);
+  } else {
+    const total = G.res.reduce((a, x) => a + x.s, 0), [tn, ti] = gTitle(total);
+    G.total = total;
+    if (total > (store.get("guessBest") || 0)) store.set("guessBest", total);
+    setSegs(ROUNDS, ROUNDS); setCat(total >= ROUNDS * 55 ? "water" : "home");
+    setBand(`<div class="kicker"><span>Toplam puanın</span></div>
+      <div class="big" id="gBig">0</div><div class="bigunit">/ ${ROUNDS * 100} puan</div><span class="stamp">${ic(ti)}${tn}</span>`);
+  }
+  const res = boardOnly ? "" : `<h3>Tahminlerin</h3><ol class="list gres">${G.res.map((x, k) => `<li style="animation-delay:${300 + k * 70}ms"><span class="n">${k + 1}</span><div><b>${x.n}</b><span>Sen ${fmt(x.g)} L · gerçek ${fmt(x.a)} L</span></div><em>+${x.s}</em></li>`).join("")}</ol>`;
+  const el = swap(`${boardOnly ? "" : `<div class="card join"><span class="lab">Grubunla yarış</span>
+      <div class="jrow"><label class="jf"><span>Adın</span><input id="gName" maxlength="24" value="${esc(me.name || "")}" placeholder="Örn. Elif"></label>
+      <label class="jf"><span>Grup kodu</span><input id="gGroup" maxlength="12" value="${esc(me.group || "")}" placeholder="Örn. DOGA1"></label></div>
+      <button class="btn" id="gSave" type="button">${ic("users")}Puanımı kaydet</button><span class="small" id="gMsg"></span></div>`}
+    ${boardOnly ? `<div class="card"><span class="lab">Grup kodu</span><div class="jrow"><label class="jf" style="flex:1"><span class="sr">Grup kodu</span><input id="gGroup" maxlength="12" value="${esc(me.group || "")}" placeholder="Örn. DOGA1"></label><button class="btn ghost" id="gOpen" type="button" style="width:auto">Aç</button></div></div>` : ""}
+    <div id="gList"></div>${res}`);
+  const gIn = el.querySelector("#gGroup"); gIn.oninput = () => { gIn.value = cleanCode(gIn.value); };
+  const list = el.querySelector("#gList");
+  const show = async group => {
+    if (!group) return;
+    list.innerHTML = `<p class="small">Yükleniyor…</p>`;
+    try {
+      const res = await fetch(`${fsBase()}/groups/${encodeURIComponent(group)}/guess?pageSize=300&key=${FIREBASE.apiKey}`);
+      if (!res.ok) throw 0;
+      const ms = ((await res.json()).documents || []).map(d => Object.fromEntries(Object.entries(d.fields || {}).map(([k, x]) => [k, fromFs(x)]))).sort((a, b) => b.best - a.best);
+      list.innerHTML = ms.length ? `<h3>${esc(group)} grubu</h3><ol class="list board gb"><li class="hd"><span>#</span><span>Ad</span><span>En iyi</span></li>${ms.map((m, k) => `<li><span class="n">${k + 1}</span><b class="nm">${esc(m.name)}</b><span class="tv">${fmt(m.best)}</span></li>`).join("")}</ol>` : `<p class="small">Bu grupta henüz puan yok. İlk sen ol.</p>`;
+    } catch (e) { list.innerHTML = `<p class="small">Pano yüklenemedi.</p>`; }
+  };
+  if (boardOnly) {
+    const open = () => { const g = cleanCode(gIn.value); if (g) { sfx.tap(); store.set("me", { ...me, group: g }); document.querySelector(".gcode").textContent = g; show(g); } };
+    el.querySelector("#gOpen").onclick = open; gIn.onkeydown = e => { if (e.key === "Enter") open(); };
+    show(me.group);
+    actions.innerHTML = `<button class="btn" id="gPlay" type="button">${ic("drop")}Oyna</button>`;
+    actions.querySelector("#gPlay").onclick = () => { sfx.tap(); guessIntro(); };
+    return;
+  }
+  const msg = el.querySelector("#gMsg"), btn = el.querySelector("#gSave");
+  btn.onclick = async () => {
+    const name = cleanName(el.querySelector("#gName").value), group = cleanCode(gIn.value);
+    if (!name || !group) { msg.textContent = "Adını ve grup liderinin verdiği kodu yaz."; return; }
+    store.set("me", { name, group }); btn.disabled = true; msg.textContent = "Kaydediliyor…";
+    try {
+      const url = `${fsBase()}/groups/${encodeURIComponent(group)}/guess/${encodeURIComponent(memberKey(name))}?key=${FIREBASE.apiKey}`;
+      const old = await fetch(url); let prev = {};
+      if (old.ok) prev = Object.fromEntries(Object.entries((await old.json()).fields || {}).map(([k, x]) => [k, fromFs(x)]));
+      else if (old.status !== 404) throw 0;
+      const fields = { name, best: Math.max(prev.best || 0, G.total), plays: (prev.plays || 0) + 1 };
+      const put = await fetch(url, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fields: Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, toFs(v)])) }) });
+      if (!put.ok) throw 0;
+      sfx.win(); toast("Puanın kaydedildi"); msg.textContent = ""; btn.hidden = true; show(group);
+    } catch (e) { btn.disabled = false; msg.textContent = "Kaydedilemedi. İnternet bağlantını kontrol edip tekrar dene."; }
+  };
+  if (me.group) show(me.group);
+  actions.innerHTML = `<div class="row2"><button class="btn" id="gAgain" type="button">${ic("redo")}Tekrar oyna</button><button class="btn ghost" id="gHome" type="button" aria-label="Ana ekran">${ic("house")}</button></div>`;
+  actions.querySelector("#gAgain").onclick = () => { sfx.tap(); guessIntro(); };
+  actions.querySelector("#gHome").onclick = () => { sfx.back(); intro(); };
+  sfx.win();
+  setTimeout(() => { const b = document.getElementById("gBig"); countUp(b, G.total, 0, 1400); b.style.fontVariationSettings = `"YEAR" ${Math.round(2050 - G.total / (ROUNDS * 100) * 71)}`; burstAt(b, 26); }, 350);
+}
+
 addEventListener("keydown", e => { if (e.key === "Escape" && !backBtn.hidden) backBtn.click(); });
-intro();
+if (/tahmin/.test(location.hash)) guessIntro(); else intro();
 </script>
 </body>
 </html>
