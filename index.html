@@ -281,7 +281,7 @@ const DATA = {
     flyDom: { v: 150, unit: "kg CO₂/gidiş-dönüş", src: "Yaklaşık 700 km × 2, DEFRA kısa mesafe (yaklaşık)" },
     flyInt: { v: 600, unit: "kg CO₂/gidiş-dönüş", src: "Avrupa'ya ortalama uçuş (yaklaşık)" },
     clothes: { v: 15, unit: "kg CO₂/parça", src: "Ortalama giysi üretimi (yaklaşık)" },
-    bottle: { v: 0.08, unit: "kg CO₂/pet şişe", src: "0,5 L pet şişe üretim ve taşıma (yaklaşık)" },
+    bottle: { v: { small: 0.08, mid: 0.15, big: 0.35 }, unit: "kg CO₂/şişe (0,5 / 1,5 / 5 L)", src: "Pet şişe üretim ve taşıma, boya göre (yaklaşık)" },
     diet: { v: { high: 2630, medium: 2040, low: 1720, fish: 1420, veg: 1390, vegan: 1060 }, unit: "kg CO₂e/yıl", src: "Scarborough vd. 2014, beslenme tipine göre" }
   },
   // Faturayı bilmeyen ya da yurtta kalan için kişi başı aylık tahminler
@@ -299,7 +299,7 @@ const DATA = {
     toilet: { v: 36, unit: "L/gün", src: "Günde ~6 sifon × 6 L (yaklaşık)" },
     tapOpen: { v: 12, unit: "L/gün ek", src: "Diş fırçalarken açık musluk, 2 × 2 dk × 3 L/dk (yaklaşık)" },
     kitchen: { v: 20, unit: "L/gün", src: "Evde yemek ve bulaşık payı; yurtta 5 L (yaklaşık)" },
-    bottle: { v: 3, unit: "L/pet şişe", src: "Pet şişe üretiminde kullanılan su (yaklaşık)" }
+    bottle: { v: { small: 3, mid: 6, big: 15 }, unit: "L/şişe (0,5 / 1,5 / 5 L)", src: "Pet şişe üretiminde kullanılan su, boya göre (yaklaşık)" }
   },
   avg: {
     co2: { v: 6.8, unit: "ton CO₂e/kişi/yıl", src: "TÜİK 2024 sera gazı envanteri (tüm sektörler)" },
@@ -451,10 +451,13 @@ const STEPS = [
   { id: "elec", when: () => !isDorm(), cat: "enerji", i: "zap", q: "Aylık elektrik faturanız ne kadar?", type: "bill", units: ["TL", "kWh"], price: () => DATA.price.elec.v, def: 900 },
   { id: "gas", when: () => !isDorm(), cat: "enerji", i: "flame", q: "Aylık doğalgaz faturanız ne kadar?", sub: "Kışın yüksek, yazın düşük olur. Ortalama bir ay düşün.", type: "bill", units: ["TL", "m³"], price: () => DATA.price.gas.v, def: 1100, none: "Doğalgaz yok" },
   { id: "water", when: () => !isDorm(), cat: "su", i: "drop", q: "Aylık su faturanız ne kadar?", sub: "İSKİ'nin kademeli konut tarifesiyle m³'e çevrilir.", type: "bill", units: ["TL", "m³"], water: true, def: 1100 },
-  { id: "shower", cat: "su", i: "shower", q: "Günde ortalama kaç dakika duş alıyorsun?", type: "num", min: 0, max: 40, def: 10, unit: "dakika", sound: "drop" },
+  { id: "showerFreq", cat: "su", i: "shower", q: "Haftada kaç kez duş alıyorsun?", type: "num", min: 0, max: 21, def: 7, unit: "kez / hafta", sound: "drop" },
+  { id: "shower", when: () => (A.showerFreq ?? 7) > 0, cat: "su", i: "timer", q: "Bir duşun ortalama kaç dakika sürüyor?", sub: "Suyu açtığın andan kapattığın ana kadar.", type: "num", min: 1, max: 40, def: 8, unit: "dakika", sound: "drop" },
   { id: "tap", cat: "su", q: "Dişlerini fırçalarken musluk açık mı kalıyor?", type: "choice", opts: [
     { v: true, i: "tap", l: "Evet, genelde açık" }, { v: false, i: "hand", l: "Hayır, kapatıyorum" }] },
-  { id: "bottle", cat: "su", i: "bottle", q: "Günde kaç pet şişe su içiyorsun?", sub: "Matara ya da musluk suyu kullanıyorsan 0.", type: "num", min: 0, max: 10, def: 1, unit: "şişe" },
+  { id: "bottle", cat: "su", i: "bottle", q: "Haftada kaç pet şişe su alıyorsun?", sub: "Maden suyu dahil. Matara, damacana ya da musluk suyu kullanıyorsan 0.", type: "num", min: 0, max: 50, def: 5, unit: "şişe / hafta" },
+  { id: "bottleSize", when: () => (A.bottle ?? 5) > 0, cat: "su", q: "Genelde hangi boy şişe alıyorsun?", type: "choice", opts: [
+    { v: "small", t: "0,5", l: "Küçük", s: "0,33 – 0,5 litre" }, { v: "mid", t: "1,5", l: "Orta", s: "1 – 1,5 litre" }, { v: "big", t: "5", l: "Büyük", s: "5 litre" }] },
   { id: "commute", cat: "ulasim", q: "Okula ya da işe genelde nasıl gidiyorsun?", type: "choice", opts: [
     { v: "yuru", i: "walk", l: "Yürüyerek ya da bisikletle" }, { v: "toplu", i: "bus", l: "Otobüs, metro, minibüs" }, { v: "servis", i: "van", l: "Servisle" }, { v: "araba", i: "car", l: "Arabayla" }] },
   { id: "transit", when: () => A.commute === "toplu" || A.commute === "servis", cat: "ulasim", i: "timer", q: "Haftada toplam kaç saatin yolda geçiyor?", type: "num", min: 0, max: 40, def: 5, unit: "saat" },
@@ -501,7 +504,8 @@ function calc() {
     elecPP = e == null ? (estimated.push("elektrik"), E.homeElec.v) : e / people;
     gasPP = g == null ? (estimated.push("doğalgaz"), E.homeGas.v) : g / people;
   }
-  const habitL = (A.shower || 0) * W.shower.v + W.toilet.v + (A.tap ? W.tapOpen.v : 4) + (dorm ? 5 : W.kitchen.v);
+  const showerMin = (A.showerFreq ?? 7) / 7 * (A.shower ?? 8);
+  const habitL = showerMin * W.shower.v + W.toilet.v + (A.tap ? W.tapOpen.v : 4) + (dorm ? 5 : W.kitchen.v);
   const wq = dorm ? null : billQty("water");
   if (wq == null) { directL = habitL; if (!dorm) estimated.push("su"); } else directL = wq * 1000 / 30 / people;
 
@@ -516,13 +520,13 @@ function calc() {
     "Ulaşım": car + transitH * 52 * C.transit.v,
     "Uçuş": (A.flyDom || 0) * C.flyDom.v + (A.flyInt || 0) * C.flyInt.v,
     "Beslenme": C.diet.v[A.diet || "medium"],
-    "Alışveriş": (A.clothes || 0) * 12 * C.clothes.v + (A.bottle || 0) * 365 * C.bottle.v
+    "Alışveriş": (A.clothes || 0) * 12 * C.clothes.v + (A.bottle || 0) * 52 * C.bottle.v[A.bottleSize || "small"]
   };
   const water = {
     "Evde kullanım": directL,
     "Yiyecek": W.diet.v[A.diet || "medium"],
     "Kıyafet": (A.clothes || 0) * 12 * W.clothes.v / 365,
-    "Pet şişe": (A.bottle || 0) * W.bottle.v
+    "Pet şişe": (A.bottle || 0) / 7 * W.bottle.v[A.bottleSize || "small"]
   };
   return { co2, water, directL, habitL, car, elecPP, estimated, totalCo2: Object.values(co2).reduce((a, b) => a + b, 0) / 1000, totalW: Object.values(water).reduce((a, b) => a + b, 0) };
 }
@@ -530,8 +534,8 @@ const fmt = (n, d = 0) => n.toLocaleString("tr-TR", { maximumFractionDigits: d, 
 
 function tips(r) {
   const L = [], W = DATA.water, C = DATA.co2;
-  const sh = A.shower || 0;
-  if (sh > 5) L.push({ s: (sh - 5) * W.shower.v * 365 * .02, t: `Duşu ${sh} dakikadan 5 dakikaya indir`, d: `Yılda yaklaşık ${fmt((sh - 5) * W.shower.v * 365)} litre su kurtarırsın.` });
+  const sh = A.shower ?? 8, sf = A.showerFreq ?? 7;
+  if (sf > 0 && sh > 5) { const l = (sh - 5) * W.shower.v * sf * 52; L.push({ s: l * .02, t: `Duşu ${sh} dakikadan 5 dakikaya indir`, d: `Yılda yaklaşık ${fmt(l)} litre su kurtarırsın.` }); }
   if (A.tap) L.push({ s: W.tapOpen.v * 365 * .02, t: "Diş fırçalarken musluğu kapat", d: `Yılda yaklaşık ${fmt((W.tapOpen.v - 4) * 365)} litre su.` });
   const order = ["high", "medium", "low", "fish", "veg", "vegan"], i = order.indexOf(A.diet);
   if (i >= 0 && i < 2) {
@@ -544,7 +548,7 @@ function tips(r) {
   if (isDorm() && A.heater === "elektrik") L.push({ s: DATA.estimate.heater.v * 12 * C.elec.v * .5, t: "Odadaki ısıtıcıyı daha az çalıştır, kat kat giyin", d: `Isıtıcıyı yarı yarıya azaltmak yılda ${fmt(DATA.estimate.heater.v * 6 * C.elec.v)} kg CO₂.` });
   const home = r.co2["Ev enerjisi"];
   if (!isDorm() && home > 50) L.push({ s: home * .1, t: "Bekleme modundaki cihazları kapat, kombiyi 1 °C düşür", d: `Ev enerjinde yaklaşık %10, kişi başı yılda ${fmt(home * .1)} kg CO₂.` });
-  if ((A.bottle || 0) > 0) L.push({ s: A.bottle * 365 * C.bottle.v, t: "Pet şişe yerine matara taşı", d: `Yılda ${fmt(A.bottle * 365)} şişe ve ${fmt(A.bottle * 365 * C.bottle.v)} kg CO₂ daha az.` });
+  if ((A.bottle || 0) > 0) { const bc = A.bottle * 52 * C.bottle.v[A.bottleSize || "small"]; L.push({ s: bc, t: "Pet şişe yerine matara taşı", d: `Yılda ${fmt(A.bottle * 52)} şişe ve ${fmt(bc)} kg CO₂ daha az.` }); }
   if ((A.clothes || 0) > 0) L.push({ s: A.clothes * 6 * C.clothes.v, t: "Yeni kıyafetin yarısını ikinci el ya da takasla al", d: `Yılda ${fmt(A.clothes * 6 * C.clothes.v)} kg CO₂ ve ${fmt(A.clothes * 6 * W.clothes.v)} litre su.` });
   return L.sort((a, b) => b.s - a.s).slice(0, 3);
 }
@@ -617,7 +621,7 @@ function intro() {
     <h1>Su ve karbon ayak izin ne kadar?</h1>
     <div class="stats">
       <div class="stat" style="animation-delay:.1s">${ic("timer")}<b>2 dk</b><span>süre</span></div>
-      <div class="stat" style="animation-delay:.18s">${ic("list")}<b>11–15</b><span>soru</span></div>
+      <div class="stat" style="animation-delay:.18s">${ic("list")}<b>13–17</b><span>soru</span></div>
       <div class="stat" style="animation-delay:.26s">${ic("award")}<b>4</b><span>rozet</span></div>
     </div>
     <h3>Nasıl çalışır</h3>
