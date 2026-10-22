@@ -192,11 +192,14 @@ td.n { font-family: var(--mono); white-space: nowrap; }
 .gstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .gstats:empty { display: none; }
 .gstats div { border: 2px solid var(--ink); border-radius: 12px; padding: 8px; display: grid; gap: 2px; background: rgba(255,255,255,.35); }
-.gstats b { font: 400 22px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.gstats b { font: 400 20px/1 var(--wordmark); white-space: nowrap; font-variation-settings: "YEAR" 1979; }
 .gstats span { font: 600 11px/1.2 var(--display); }
-.list.board > li { grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; padding: 12px 16px; }
+.list.board > li { grid-template-columns: 22px minmax(0, 1fr) 52px 84px; gap: 8px; align-items: center; padding: 12px 14px; }
+.list.board > li.hd { padding: 8px 14px; font: 700 11px var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); animation: none; }
+.list.board > li.hd span:nth-child(n+3), .list.board .tv { text-align: right; }
+.list.board .tv.w { color: var(--water); }
 .list.board .nm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 700 17px var(--display); }
-.list.board .tv { font: 400 24px/1 var(--wordmark); font-variation-settings: "YEAR" 1979; }
+.list.board .tv { font: 400 17px/1 var(--wordmark); white-space: nowrap; font-variation-settings: "YEAR" 1979; }
 .list.board .tv small { font: 700 13px var(--display); margin-left: 3px; color: var(--muted); }
 .note a { color: var(--text); font-weight: 600; }
 .card[hidden] { display: none; }
@@ -850,7 +853,7 @@ function board(groupArg) {
   const el = swap(`
     <div class="card" ${group ? "hidden" : ""} id="gCard"><span class="lab">Grup kodu</span><div class="jrow"><label class="jf" style="flex:1"><span class="sr">Grup kodu</span><input id="bGroup" maxlength="12" value="${esc(group)}" placeholder="Örn. DOGA1"></label><button class="btn ghost" id="bGo" type="button" style="width:auto">Aç</button></div></div>
     <div id="bList"><p class="small">${boardReady() ? (group ? "Yükleniyor…" : "Grup liderinin verdiği kodu yaz.") : "Pano henüz bir veritabanına bağlanmadı."}</p></div>
-    <p class="note">Sıralama, ilk denemeye göre en çok azaltana göre. Rakamlar yıllık ton CO₂. ${group ? `<a href="#" id="chg">Grubu değiştir</a>` : ""}</p>`);
+    <p class="note">Sıralama, ilk denemeye göre en çok azaltana göre. Karbon yıllık ton CO₂, su günlük litre. ${group ? `<a href="#" id="chg">Grubu değiştir</a>` : ""}</p>`);
   actions.innerHTML = `<button class="btn" id="bTest" type="button">${ic("redo")}Testi çöz</button>`;
   actions.querySelector("#bTest").onclick = () => { for (const k in A) delete A[k]; sfx.start(); go(STEPS.indexOf(visible()[0]), 1); };
   const inp = el.querySelector("#bGroup");
@@ -866,12 +869,11 @@ function board(groupArg) {
       if (!ms.length) { list.innerHTML = `<p class="small">Bu grupta henüz kimse yok. İlk sen ol.</p>`; document.getElementById("gstats").innerHTML = ""; return; }
       const rows = ms.map(m => ({ ...m, drop: (m.first?.co2 || 0) - (m.last?.co2 || 0) })).sort((a, b) => b.drop - a.drop || a.last.co2 - b.last.co2);
       const avg = rows.reduce((s, m) => s + m.last.co2, 0) / rows.length;
-      const saved = rows.reduce((s, m) => s + Math.max(0, m.drop), 0) * 1000;
-      document.getElementById("gstats").innerHTML = `<div><b>${rows.length}</b><span>kişi</span></div><div><b>${fmt(avg, 1)} t</b><span>ortalama CO₂</span></div><div><b>${saved >= 1000 ? fmt(saved / 1000, 1) + " t" : fmt(saved) + " kg"}</b><span>azaltıldı</span></div>`;
-      list.innerHTML = `<ol class="list board">${rows.map((m, k) => {
+      document.getElementById("gstats").innerHTML = `<div><b>${rows.length}</b><span>kişi</span></div><div><b>${fmt(avg, 1)} t</b><span>ortalama CO₂</span></div><div><b>${fmt(rows.reduce((s, m) => s + m.last.water, 0) / rows.length)}</b><span>ortalama L su / gün</span></div>`;
+      list.innerHTML = `<ol class="list board"><li class="hd"><span></span><span></span><span>t CO₂</span><span>L su</span></li>${rows.map((m, k) => {
         const pct = m.first.co2 ? Math.round((m.last.co2 / m.first.co2 - 1) * 100) : 0;
         const chip = m.attempts > 1 && pct !== 0 ? `<em class="chg ${pct < 0 ? "down" : "up"}">${pct < 0 ? "▼" : "▲"} %${Math.abs(pct)}</em>` : "";
-        return `<li><span class="n">${k + 1}</span><b class="nm">${esc(m.name)}${chip}</b><span class="tv">${fmt(m.last.co2, 1)}<small>t</small></span></li>`;
+        return `<li><span class="n">${k + 1}</span><b class="nm">${esc(m.name)}${chip}</b><span class="tv">${fmt(m.last.co2, 1)}<small>t</small></span><span class="tv w">${fmt(m.last.water)}</span></li>`;
       }).join("")}</ol>`;
     } catch (e) { const list = el.querySelector("#bList"); if (list.isConnected) list.innerHTML = `<p class="small">Pano yüklenemedi. İnternet bağlantını kontrol et.</p>`; }
   };
