@@ -232,6 +232,13 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
 .num.gnum button { flex: none; }
 .num.gnum output { flex: 1; min-width: 0; font-size: clamp(34px, 11vw, 50px); }
 @media (max-height: 760px) { .cats { display: none; } }
+.gtx { margin: 0; color: var(--text); font-size: 14px; }
+.gimp { border-left-width: 8px; border-left-color: var(--cat); }
+.gscl { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 6px 0; }
+.gscl + .gscl { border-top: 2px solid var(--soft-rule); }
+.gscl .k { font: 700 12px var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.gscl b { display: block; font: 700 17px var(--display); }
+.gscl div span { font-size: 13px; color: var(--muted); }
 .gentry { margin-top: 2px; padding: 10px 14px; font-size: 16px; }
 </style>
 </head>
@@ -948,22 +955,27 @@ function board(groupArg) {
 // ===== Tahmin et oyunu: bir ürünün arkasındaki sanal suyu tahmin et =====
 // Değerler Water Footprint Network ve WWF ortalamalarından yaklaşık
 const ITEMS = [
-  { n: "Bir fincan kahve", i: "coffee", v: 132, d: "Suyun neredeyse tamamı kahve çekirdeğini yetiştirmek için harcanır." },
-  { n: "Bir bardak çay", i: "glass", v: 27, d: "Aynı keyif, kahvenin beşte biri kadar su." },
-  { n: "Bir dilim ekmek", i: "wheat", v: 40, d: "Buğdayın tarlada sulanması ve yağmur suyu." },
-  { n: "Bir yumurta", i: "egg", v: 196, d: "Tavuğun yediği yemi yetiştirmek için gereken su." },
-  { n: "Bir elma", i: "apple", v: 125, d: "Elma ağacı bir yıl boyunca su ister." },
-  { n: "Bir bardak süt", i: "glass", v: 255, d: "İneğin içtiği su ve yediği yemin yetişmesi." },
-  { n: "Bir hamburger", i: "burger", v: 2400, d: "Köftedeki et, suyun büyük kısmını tek başına taşır." },
-  { n: "1 kg tavuk eti", i: "drum", v: 4300, d: "Sığır etinin üçte birinden az, ama yine de çok." },
-  { n: "1 kg sığır eti", i: "steak", v: 15400, d: "Hayvanın yıllarca yediği yem ve içtiği su birikir." },
-  { n: "Bir pamuklu tişört", i: "shirt", v: 2700, d: "Pamuk en çok su isteyen tarım ürünlerinden biridir." },
-  { n: "Bir kot pantolon", i: "jeans", v: 8000, d: "Pamuğun sulanması, boyanması ve yıkanması." },
-  { n: "Bir akıllı telefon", i: "phone", v: 12000, d: "Maden çıkarma, çip üretimi ve fabrikalar." },
-  { n: "Bir A4 kâğıt", i: "paper", v: 10, d: "Ağaçtan kâğıda giden yolda harcanan su." },
-  { n: "Bir tablet çikolata (100 g)", i: "choco", v: 1700, d: "Kakao ağaçları sıcak ve çok yağışlı yerlerde yetişir." },
-  { n: "1 kg pirinç", i: "utensils", v: 2500, d: "Pirinç tarlaları aylarca su altında tutulur." }
+  { n: "Bir fincan kahve", e: "Kahve tarlaları için tropikal ormanlar kesiliyor. Ağaç gölgesinde yetişen kahve, kuşların yaşam alanını korur.", i: "coffee", v: 132, d: "Suyun neredeyse tamamı kahve çekirdeğini yetiştirmek için harcanır." },
+  { n: "Bir bardak çay", e: "Karadeniz'de yamaçlar çay bahçesine dönüştü. Fazla gübre yağmurla derelere ve denize karışıyor.", i: "glass", v: 27, d: "Aynı keyif, kahvenin beşte biri kadar su." },
+  { n: "Bir dilim ekmek", e: "Türkiye'de her gün milyonlarca ekmek çöpe gidiyor. Atılan her dilimle onu yetiştiren su da boşa gidiyor.", i: "wheat", v: 40, d: "Buğdayın tarlada sulanması ve yağmur suyu." },
+  { n: "Bir yumurta", e: "Tavuk yemi büyük ölçüde soya ve mısırdan yapılır. Soya tarlaları için Güney Amerika'da ormanlar kesiliyor.", i: "egg", v: 196, d: "Tavuğun yediği yemi yetiştirmek için gereken su." },
+  { n: "Bir elma", e: "Sulamalı tarım için yeraltı suyu aşırı çekilince Konya Ovası'ndaki gibi obruklar oluşuyor, sulak alanlar kuruyor.", i: "apple", v: 125, d: "Elma ağacı bir yıl boyunca su ister." },
+  { n: "Bir bardak süt", e: "İnekler güçlü bir sera gazı olan metan salar. Büyük çiftliklerin atıkları dereleri ve yeraltı suyunu kirletebiliyor.", i: "glass", v: 255, d: "İneğin içtiği su ve yediği yemin yetişmesi." },
+  { n: "Bir hamburger", e: "Sığır yetiştiriciliği Amazon'daki orman kaybının en büyük nedeni. Kesilen her orman hem karbonu hem yağmuru kaybettirir.", i: "burger", v: 2400, d: "Köftedeki et, suyun büyük kısmını tek başına taşır." },
+  { n: "1 kg tavuk eti", e: "Yem için yetiştirilen soya orman kaybına yol açıyor. Kümes atıkları toprak ve suda azot kirliliği yaratıyor.", i: "drum", v: 4300, d: "Sığır etinin üçte birinden az, ama yine de çok." },
+  { n: "1 kg sığır eti", e: "Dünyadaki tarım arazilerinin yaklaşık dörtte üçü hayvancılığa ve yemine ayrılmış, ama insanlığın kalorisinin beşte birinden azını sağlıyor.", i: "steak", v: 15400, d: "Hayvanın yıllarca yediği yem ve içtiği su birikir." },
+  { n: "Bir pamuklu tişört", e: "Pamuk tarlalarını sulamak için nehirlerin yönü değiştirildi ve bir zamanlar dünyanın dördüncü büyük gölü olan Aral Gölü büyük ölçüde kurudu.", i: "shirt", v: 2700, d: "Pamuk en çok su isteyen tarım ürünlerinden biridir." },
+  { n: "Bir kot pantolon", e: "Kot boyahanelerinin atık suyu bazı ülkelerde nehirleri maviye boyuyor. Kot, pamuğun su yükünü de taşır.", i: "jeans", v: 8000, d: "Pamuğun sulanması, boyanması ve yıkanması." },
+  { n: "Bir akıllı telefon", e: "Lityum, kobalt gibi madenler çöl ve ormanlarda çıkarılıyor. Şili'de lityum için çekilen su, yerel toplulukların ve flamingoların suyunu azaltıyor.", i: "phone", v: 12000, d: "Maden çıkarma, çip üretimi ve fabrikalar." },
+  { n: "Bir A4 kâğıt", e: "Kâğıt için ormanlar kesiliyor, kâğıt fabrikalarının atık suyu nehirlere karışabiliyor. Geri dönüşüm bu yükü büyük ölçüde azaltır.", i: "paper", v: 10, d: "Ağaçtan kâğıda giden yolda harcanan su." },
+  { n: "Bir tablet çikolata (100 g)", e: "Fildişi Sahili ve Gana'da yağmur ormanlarının büyük kısmı kakao tarlalarına açıldı. Şempanzeler ve filler yaşam alanını kaybetti.", i: "choco", v: 1700, d: "Kakao ağaçları sıcak ve çok yağışlı yerlerde yetişir." },
+  { n: "1 kg pirinç", e: "Su altındaki çeltik tarlaları metan salar. Pirinç, insan kaynaklı metanın önemli kaynaklarından biridir.", i: "utensils", v: 2500, d: "Pirinç tarlaları aylarca su altında tutulur." }
 ];
+// Ölçek: Türkiye 85,7 milyon kişi (TÜİK 2025), dünya 8,2 milyar (BM 2025)
+// İstanbul günlük şebeke suyu ~3 milyon m³ (İSKİ); Türkiye toplam su kullanımı tarım dahil ~57 milyar m³/yıl (DSİ)
+const SCALE_TR = 85.7e6, SCALE_W = 8.2e9, IST_DAY = 3e9, TR_DAY = 57e12 / 365;
+const bigL = v => v >= 1e12 ? fmt(v / 1e12, 1) + " trilyon" : v >= 1e9 ? fmt(v / 1e9, 1) + " milyar" : fmt(v / 1e6, 1) + " milyon";
+const days = d => d >= 365 ? `${fmt(d / 365, 1)} yıllık` : d >= 1 ? `${fmt(d, d < 10 ? 1 : 0)} günlük` : `${fmt(d * 24, 0)} saatlik`;
 const ROUNDS = 8, GMIN = 1, GMAX = 20000;
 const toG = p => GMIN * Math.pow(GMAX / GMIN, p / 1000);
 const toP = g => Math.round(Math.log(g / GMIN) / Math.log(GMAX / GMIN) * 1000);
@@ -1030,8 +1042,12 @@ function reveal(it, g) {
       <div class="wnum"><span id="ga">0</span><small>litre</small></div>
       <div class="gline"><i class="ga" style="left:${pos(it.v)}%"></i><i class="gg" style="left:${pos(g)}%"></i></div>
       <span class="cmp">Senin tahminin <b>${fmt(g)} L</b>. ${msg}</span></div>
-    <div class="card"><span class="lab">Bu ne kadar su?</span><p class="small" style="margin:0;color:var(--text)">Yaklaşık ${cmp} kadar. ${it.d}</p></div>
-    <div class="gpts"><b>+${s}</b><span>puan</span></div>`);
+    <div class="gpts"><b>+${s}</b><span>puan</span></div>
+    <div class="card"><span class="lab">Bu ne kadar su?</span><p class="small gtx">Yaklaşık ${cmp} kadar. ${it.d}</p></div>
+    <div class="card gimp"><span class="lab">Doğaya etkisi</span><p class="small gtx">${it.e}</p></div>
+    <div class="card"><span class="lab">Herkes bir tane tüketse</span>
+      <div class="gscl"><span class="k">Türkiye</span><div><b>${bigL(it.v * SCALE_TR)} litre</b><span>85,7 milyon kişi. İstanbul'un ${days(it.v * SCALE_TR / IST_DAY)} şebeke suyu kadar.</span></div></div>
+      <div class="gscl"><span class="k">Dünya</span><div><b>${bigL(it.v * SCALE_W)} litre</b><span>8,2 milyar kişi. Türkiye'nin tarım dahil ${days(it.v * SCALE_W / TR_DAY)} toplam su kullanımı kadar.</span></div></div></div>`);
   const last = G.k === ROUNDS - 1;
   actions.innerHTML = `<button class="btn" id="gNx" type="button">${last ? "Sonucu gör" : "Sıradaki ürün"} ${ic("right")}</button>`;
   actions.querySelector("#gNx").onclick = () => { sfx.tap(); if (last) guessEnd(); else { G.k++; guessRound(); } };
